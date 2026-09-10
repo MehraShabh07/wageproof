@@ -198,10 +198,18 @@ nav{
 #toast.show{transform:translateY(0);opacity:1}
 
 @media(max-width:768px){
+  nav{padding:.6rem 1rem;flex-wrap:wrap;gap:.6rem;justify-content:space-between}
+  .nav-links{order:3;width:100%;overflow-x:auto;padding-bottom:.3rem;white-space:nowrap;-webkit-overflow-scrolling:touch;display:flex}
+  .nav-link{font-size:.78rem;padding:.35rem .7rem}
   .profile-grid,.credential-body{grid-template-columns:1fr}
   .credential-qr-side{border-right:none;border-bottom:1px solid rgba(255,255,255,.07)}
   .vault-summary{grid-template-columns:repeat(2,1fr)}
-  .flow-steps{flex-wrap:wrap}.flow-step:not(:last-child)::after{display:none}
+  .flow-steps{flex-direction:column;gap:1.5rem}
+  .flow-step:not(:last-child)::after{display:none}
+  .hero{padding:6rem 1rem 3rem}
+  .hero-stats{gap:1.5rem}
+  .claims-grid{grid-template-columns:1fr}
+  .section,.page-header{padding-left:1.2rem;padding-right:1.2rem}
 }
 </style>
 </head>
