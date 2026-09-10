@@ -30,12 +30,12 @@ All Figma design specifications, layout frames, and design tokens are included d
 
 ## 🚀 Live Demo & Endpoints
 
-| Resource | Public URL | Local URL |
+| Resource | URL | Description |
 |---|---|---|
-| **Interactive Web Prototype** | [Live Public Prototype](https://elfya-103-211-14-48.run.pinggy-free.link) | [http://localhost:8000](http://localhost:8000) |
-| **Interactive API Documentation** | [Swagger UI](https://elfya-103-211-14-48.run.pinggy-free.link/docs) | [http://localhost:8000/docs](http://localhost:8000/docs) |
-| **System Health Check** | [Health Check](https://elfya-103-211-14-48.run.pinggy-free.link/health) | [http://localhost:8000/health](http://localhost:8000/health) |
-| **Platform Stats & Metrics** | [API Stats](https://elfya-103-211-14-48.run.pinggy-free.link/api/stats) | [http://localhost:8000/api/stats](http://localhost:8000/api/stats) |
+| **🌐 Permanent 24/7 Live Prototype** | **[https://mehrashabh07.github.io/wageproof/](https://mehrashabh07.github.io/wageproof/)** | Hosted on GitHub Pages (Always On, All Devices) |
+| **⚡ Live Backend API Tunnel** | [https://elfya-103-211-14-48.run.pinggy-free.link](https://elfya-103-211-14-48.run.pinggy-free.link) | Active tunnel to FastAPI backend |
+| **📖 Interactive Swagger UI** | [https://elfya-103-211-14-48.run.pinggy-free.link/docs](https://elfya-103-211-14-48.run.pinggy-free.link/docs) | Complete REST API documentation |
+| **💻 Local Dev Prototype** | [http://localhost:8000](http://localhost:8000) | Local development instance |
 
 ---
 
