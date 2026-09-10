@@ -1,0 +1,75 @@
+{
+  "name": "WageProof Design Tokens",
+  "version": "2.4.0",
+  "author": "WageProof Product & Design Team",
+  "color": {
+    "background": {
+      "primary": { "value": "#0F172A", "type": "color", "description": "Deep Navy Canvas Background" },
+      "surface": { "value": "#1E293B", "type": "color", "description": "Card and Dialog Surface" },
+      "elevated": { "value": "#162032", "type": "color", "description": "Inner Wells & Code Preview Background" }
+    },
+    "accent": {
+      "teal": { "value": "#00D4AA", "type": "color", "description": "Primary Brand Action & Verified Highlights" },
+      "blue": { "value": "#38BDF8", "type": "color", "description": "Identity Badges & Technical Indicators" }
+    },
+    "status": {
+      "success": { "value": "#10B981", "type": "color", "description": "Verified & Approved Status" },
+      "warning": { "value": "#F59E0B", "type": "color", "description": "Under Review & Attention Banners" },
+      "danger": { "value": "#F87171", "type": "color", "description": "Decline & Revocation Triggers" }
+    },
+    "text": {
+      "primary": { "value": "#FFFFFF", "type": "color", "description": "Primary Typography Color" },
+      "muted": { "value": "#94A3B8", "type": "color", "description": "Subtitles, Captions and Form Labels" },
+      "subtle": { "value": "#64748B", "type": "color", "description": "Disabled and Footnote Text" }
+    },
+    "border": {
+      "subtle": { "value": "rgba(255, 255, 255, 0.08)", "type": "color", "description": "Card and Divider Stroke" },
+      "active": { "value": "rgba(0, 212, 170, 0.4)", "type": "color", "description": "Focus and Selected Stroke" }
+    }
+  },
+  "typography": {
+    "fontFamilies": {
+      "heading": { "value": "Inter", "type": "fontFamilies" },
+      "body": { "value": "Inter", "type": "fontFamilies" },
+      "code": { "value": "JetBrains Mono", "type": "fontFamilies" }
+    },
+    "fontSize": {
+      "hero": { "value": "56px", "type": "fontSizes" },
+      "h1": { "value": "36px", "type": "fontSizes" },
+      "h2": { "value": "24px", "type": "fontSizes" },
+      "h3": { "value": "18px", "type": "fontSizes" },
+      "body": { "value": "14px", "type": "fontSizes" },
+      "caption": { "value": "12px", "type": "fontSizes" }
+    },
+    "fontWeight": {
+      "regular": { "value": "400", "type": "fontWeights" },
+      "medium": { "value": "500", "type": "fontWeights" },
+      "semibold": { "value": "600", "type": "fontWeights" },
+      "bold": { "value": "700", "type": "fontWeights" },
+      "black": { "value": "900", "type": "fontWeights" }
+    }
+  },
+  "spacing": {
+    "xs": { "value": "4px", "type": "spacing" },
+    "sm": { "value": "8px", "type": "spacing" },
+    "md": { "value": "16px", "type": "spacing" },
+    "lg": { "value": "24px", "type": "spacing" },
+    "xl": { "value": "32px", "type": "spacing" },
+    "xxl": { "value": "48px", "type": "spacing" }
+  },
+  "borderRadius": {
+    "badge": { "value": "4px", "type": "borderRadius" },
+    "button": { "value": "8px", "type": "borderRadius" },
+    "card": { "value": "14px", "type": "borderRadius" },
+    "container": { "value": "24px", "type": "borderRadius" },
+    "pill": { "value": "9999px", "type": "borderRadius" }
+  },
+  "boxShadow": {
+    "card": {
+      "value": { "x": "0", "y": "4", "blur": "24", "spread": "0", "color": "rgba(0, 0, 0, 0.35)", "type": "dropShadow" }
+    },
+    "tealGlow": {
+      "value": { "x": "0", "y": "8", "blur": "32", "spread": "0", "color": "rgba(0, 212, 170, 0.25)", "type": "dropShadow" }
+    }
+  }
+}

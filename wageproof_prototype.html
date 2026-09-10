@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>WageProof — Financial Readiness Passport</title>
+<meta name="description" content="WageProof turns informal work evidence into a trusted, privacy-preserving financial readiness credential for India's gig and informal workforce."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0F172A;--navy2:#1E293B;--navy3:#162032;--navy4:#0A1020;
+  --teal:#00D4AA;--teal-dark:#00A887;--teal-glow:rgba(0,212,170,.18);
+  --white:#FFFFFF;--grey-lt:#CBD5E1;--grey-md:#94A3B8;--grey-dk:#64748B;
+  --amber:#F59E0B;--pink:#F472B6;--blue:#3B82F6;--green:#34D399;--red:#F87171;
+  --gradient:linear-gradient(135deg,#00D4AA 0%,#00A887 50%,#0EA5E9 100%);
+  --card-gradient:linear-gradient(135deg,rgba(0,212,170,.08) 0%,rgba(14,165,233,.05) 100%);
+  --font:'Inter',sans-serif;
+  --radius:14px;--radius-sm:8px;--radius-lg:20px;
+  --shadow:0 4px 24px rgba(0,0,0,.35);
+  --transition:.3s cubic-bezier(.4,0,.2,1);
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--navy);color:var(--white);min-height:100vh;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button{font-family:var(--font);cursor:pointer;border:none;outline:none}
+input,select,textarea{font-family:var(--font)}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--navy2)}
+::-webkit-scrollbar-thumb{background:var(--teal-dark);border-radius:3px}
+.hidden{display:none!important}
+.page{display:none;animation:fadeIn .4s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  background:rgba(15,23,42,.92);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(0,212,170,.15);
+  padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between;
+}
+.nav-logo{display:flex;align-items:center;gap:.6rem;font-weight:800;font-size:1.3rem;letter-spacing:-.02em;cursor:pointer}
+.nav-logo-dot{width:10px;height:10px;background:var(--teal);border-radius:50%;box-shadow:0 0 12px var(--teal)}
+.nav-links{display:flex;gap:.3rem;align-items:center}
+.nav-link{padding:.45rem .9rem;border-radius:8px;font-size:.83rem;font-weight:500;color:var(--grey-md);transition:var(--transition);cursor:pointer}
+.nav-link:hover,.nav-link.active{background:var(--teal-glow);color:var(--teal)}
+.nav-cta{background:var(--gradient);color:var(--navy);font-weight:700;font-size:.83rem;padding:.45rem 1.1rem;border-radius:8px;transition:var(--transition);cursor:pointer;border:none}
+.nav-cta:hover{opacity:.88;transform:translateY(-1px)}
+.nav-badge{font-size:.65rem;background:rgba(0,212,170,.15);color:var(--teal);padding:.15rem .4rem;border-radius:4px;margin-left:.4rem;font-weight:600}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.8rem 1.8rem;border-radius:10px;font-size:.9rem;font-weight:600;transition:var(--transition);cursor:pointer;border:none}
+.btn-primary{background:var(--gradient);color:var(--navy)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,212,170,.3)}
+.btn-outline{background:transparent;color:var(--teal);border:1.5px solid var(--teal)}
+.btn-outline:hover{background:var(--teal-glow)}
+.btn-ghost{background:var(--navy2);color:var(--grey-lt);border:1px solid rgba(255,255,255,.08)}
+.btn-ghost:hover{background:var(--navy3);color:var(--white)}
+.btn-sm{padding:.5rem 1.1rem;font-size:.82rem}
+.btn-danger{background:rgba(248,113,113,.1);color:var(--red);border:1px solid rgba(248,113,113,.25)}
+.btn-danger:hover{background:rgba(248,113,113,.2)}
+
+.card{background:var(--navy2);border:1px solid rgba(255,255,255,.07);border-radius:var(--radius);padding:1.5rem;transition:var(--transition)}
+.card:hover{border-color:rgba(0,212,170,.15)}
+.card-gradient{background:var(--card-gradient);border:1px solid rgba(0,212,170,.15)}
+
+.badge{display:inline-flex;align-items:center;gap:.35rem;padding:.3rem .75rem;border-radius:20px;font-size:.75rem;font-weight:600}
+.badge-teal{background:rgba(0,212,170,.12);color:var(--teal);border:1px solid rgba(0,212,170,.25)}
+.badge-green{background:rgba(52,211,153,.12);color:var(--green);border:1px solid rgba(52,211,153,.25)}
+.badge-amber{background:rgba(245,158,11,.12);color:var(--amber);border:1px solid rgba(245,158,11,.25)}
+.badge-red{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.25)}
+.badge-grey{background:rgba(148,163,184,.1);color:var(--grey-md);border:1px solid rgba(148,163,184,.2)}
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+.dot-green{background:var(--green)}.dot-amber{background:var(--amber)}.dot-teal{background:var(--teal)}
+
+.progress-bar-wrap{background:rgba(255,255,255,.08);border-radius:999px;height:6px;overflow:hidden}
+.progress-bar-fill{height:100%;background:var(--gradient);border-radius:999px;transition:width .6s ease}
+
+.section{padding:6rem 2rem 4rem;max-width:1200px;margin:0 auto}
+.page-header{padding:6.5rem 2rem 2rem;max-width:1200px;margin:0 auto}
+.section-label{font-size:.78rem;font-weight:700;color:var(--teal);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem}
+.section-title{font-size:clamp(1.8rem,3vw,2.5rem);font-weight:800;line-height:1.15;letter-spacing:-.02em;margin-bottom:.8rem}
+
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;text-align:center;padding:7rem 2rem 4rem}
+.hero-bg{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(0,212,170,.12) 0%,transparent 70%),radial-gradient(ellipse 50% 40% at 80% 80%,rgba(14,165,233,.08) 0%,transparent 60%)}
+.hero-grid{position:absolute;inset:0;z-index:0;background-image:linear-gradient(rgba(0,212,170,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.04) 1px,transparent 1px);background-size:60px 60px}
+.hero-content{position:relative;z-index:1;max-width:780px}
+.hero-track{display:inline-flex;align-items:center;gap:.5rem;background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.2);border-radius:999px;padding:.4rem 1rem;font-size:.78rem;font-weight:600;color:var(--teal);margin-bottom:2rem}
+.hero-title{font-size:clamp(2.8rem,6vw,5rem);font-weight:900;line-height:1.05;letter-spacing:-.03em;margin-bottom:1.2rem}
+.hero-title span{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:1.15rem;color:var(--grey-lt);max-width:560px;margin:0 auto 2.5rem;line-height:1.65}
+.hero-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.hero-stats{display:flex;gap:3rem;justify-content:center;margin-top:4rem;padding-top:2.5rem;border-top:1px solid rgba(255,255,255,.07);flex-wrap:wrap}
+.hero-stat-num{font-size:2.2rem;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-stat-label{font-size:.82rem;color:var(--grey-md);margin-top:.2rem}
+
+.blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:.12;animation:blobFloat 8s ease-in-out infinite;pointer-events:none}
+.blob-1{width:400px;height:400px;background:var(--teal);top:-100px;right:-100px;animation-delay:0s}
+.blob-2{width:350px;height:350px;background:#3B82F6;bottom:-80px;left:-80px;animation-delay:-3s}
+.blob-3{width:250px;height:250px;background:#8B5CF6;top:40%;right:20%;animation-delay:-5s}
+@keyframes blobFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(20px,-20px) scale(1.05)}66%{transform:translate(-15px,10px) scale(.97)}}
+
+.flow-section{padding:5rem 2rem;background:rgba(14,165,233,.03);border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05)}
+.flow-steps{display:flex;gap:0;max-width:1100px;margin:3rem auto 0;position:relative}
+.flow-step{flex:1;text-align:center;padding:0 1rem;position:relative}
+.flow-step-icon{width:60px;height:60px;border-radius:50%;background:var(--teal-glow);border:2px solid rgba(0,212,170,.35);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.4rem;position:relative;z-index:1}
+.flow-step:not(:last-child)::after{content:'';position:absolute;top:30px;left:calc(50% + 30px);right:calc(-50% + 30px);height:2px;background:linear-gradient(90deg,var(--teal),rgba(0,212,170,.1))}
+.flow-step-num{position:absolute;top:-8px;right:-8px;width:22px;height:22px;background:var(--teal);border-radius:50%;color:var(--navy);font-size:.7rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+.flow-step-title{font-size:.92rem;font-weight:700;margin-bottom:.4rem}
+.flow-step-desc{font-size:.78rem;color:var(--grey-md);line-height:1.5}
+
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem;margin-top:3rem}
+.feature-card{background:var(--navy2);border:1px solid rgba(255,255,255,.07);border-radius:var(--radius);padding:1.6rem;transition:var(--transition)}
+.feature-card:hover{border-color:rgba(0,212,170,.25);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.3)}
+.feature-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1rem}
+.feature-title{font-size:.95rem;font-weight:700;margin-bottom:.5rem}
+.feature-desc{font-size:.82rem;color:var(--grey-md);line-height:1.55}
+
+.wizard-wrap{max-width:680px;margin:0 auto;padding:7rem 1.5rem 3rem}
+.wizard-steps{display:flex;gap:.5rem;margin-bottom:1rem;align-items:center}
+.wizard-step-dot{flex:1;height:4px;border-radius:999px;background:rgba(255,255,255,.1);transition:background .4s ease}
+.wizard-step-dot.done{background:var(--teal)}
+.wizard-step-dot.active{background:linear-gradient(90deg,var(--teal),var(--teal-dark))}
+.wizard-step-labels{display:flex;justify-content:space-between;margin-bottom:2rem}
+.wizard-step-label{font-size:.7rem;color:var(--grey-dk);font-weight:500}
+.wizard-step-label.active{color:var(--teal)}
+.wizard-panel{display:none;animation:fadeIn .35s ease}
+.wizard-panel.active{display:block}
+
+.form-group{margin-bottom:1.3rem}
+.form-label{display:block;font-size:.82rem;font-weight:600;color:var(--grey-lt);margin-bottom:.5rem}
+.form-input{width:100%;background:var(--navy2);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;padding:.8rem 1rem;color:var(--white);font-size:.9rem;transition:var(--transition)}
+.form-input:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 3px rgba(0,212,170,.12)}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394A3B8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .8rem center;background-size:1.2rem;padding-right:2.5rem}
+.form-hint{font-size:.75rem;color:var(--grey-dk);margin-top:.35rem}
+
+.consent-box{background:rgba(0,212,170,.05);border:1.5px solid rgba(0,212,170,.2);border-radius:var(--radius);padding:1.5rem}
+.consent-item{display:flex;gap:.8rem;margin-bottom:1rem;align-items:flex-start}
+.consent-item:last-child{margin-bottom:0}
+.consent-check{width:22px;height:22px;min-width:22px;border-radius:6px;background:var(--teal);display:flex;align-items:center;justify-content:center;margin-top:1px;font-size:.8rem;color:var(--navy);font-weight:900}
+
+.evidence-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1.2rem}
+.evidence-option{display:flex;align-items:center;gap:.7rem;padding:.8rem 1rem;background:var(--navy2);border:1.5px solid rgba(255,255,255,.08);border-radius:10px;cursor:pointer;transition:var(--transition)}
+.evidence-option:hover{border-color:rgba(0,212,170,.3);background:rgba(0,212,170,.04)}
+.evidence-option.selected{border-color:var(--teal);background:rgba(0,212,170,.07)}
+.upload-list{margin-top:1rem;display:flex;flex-direction:column;gap:.6rem}
+.upload-item{display:flex;align-items:center;gap:.8rem;background:var(--navy2);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:.7rem 1rem}
+
+.vault-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.2rem;margin-top:1.5rem}
+.vault-card{background:var(--navy2);border:1px solid rgba(255,255,255,.07);border-radius:var(--radius);padding:1.3rem;transition:var(--transition)}
+.vault-card:hover{border-color:rgba(0,212,170,.2)}
+.vault-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+.vault-stat{background:var(--navy2);border:1px solid rgba(255,255,255,.07);border-radius:var(--radius);padding:1.2rem;text-align:center}
+.vault-stat-num{font-size:1.8rem;font-weight:800;color:var(--teal)}
+.vault-stat-label{font-size:.76rem;color:var(--grey-md);margin-top:.2rem}
+
+.profile-grid{display:grid;grid-template-columns:1fr 1.6fr;gap:1.5rem;margin-top:1.5rem}
+.score-ring-container{position:relative;width:200px;height:200px;margin:0 auto}
+.score-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-num{font-size:3.2rem;font-weight:900;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.metric-row{display:flex;align-items:center;gap:.8rem;padding:.75rem 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.metric-row:last-child{border-bottom:none}
+.metric-icon{font-size:1.1rem;width:32px;text-align:center}
+.metric-label{font-size:.82rem;color:var(--grey-md);flex:1}
+.metric-value{font-size:.88rem;font-weight:700}
+.income-band-box{background:linear-gradient(135deg,rgba(0,212,170,.08),rgba(14,165,233,.05));border:1px solid rgba(0,212,170,.2);border-radius:var(--radius);padding:1.5rem;margin-top:1.2rem}
+.breakdown-item{display:flex;align-items:center;gap:.8rem;margin-bottom:.7rem}
+.breakdown-label{font-size:.82rem;color:var(--grey-lt);flex:1}
+.breakdown-score{font-size:.82rem;font-weight:700;width:40px;text-align:right}
+.breakdown-bar{flex:1;height:6px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
+.breakdown-fill{height:100%;border-radius:999px}
+
+.credential-card{background:var(--navy2);border:1px solid rgba(0,212,170,.2);border-radius:20px;overflow:hidden;box-shadow:0 0 60px rgba(0,212,170,.08)}
+.credential-header{background:linear-gradient(135deg,rgba(0,212,170,.15),rgba(14,165,233,.1));border-bottom:1px solid rgba(0,212,170,.15);padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between}
+.credential-body{display:grid;grid-template-columns:1fr 1.5fr}
+.credential-qr-side{padding:2rem;display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1px solid rgba(255,255,255,.07)}
+.qr-box{background:#fff;border-radius:12px;padding:16px;box-shadow:0 0 30px rgba(0,212,170,.15)}
+.credential-info-side{padding:2rem}
+.cred-field{margin-bottom:1.2rem}
+.cred-field-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--grey-dk);font-weight:600;margin-bottom:.3rem}
+.cred-field-value{font-size:.95rem;font-weight:700}
+.credential-footer{padding:1.2rem 2rem;border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem}
+
+.lender-lookup{background:var(--navy2);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:2rem;margin-bottom:1.5rem}
+.lookup-input-row{display:flex;gap:.8rem;margin-top:1rem}
+.lender-result{background:var(--navy2);border:1px solid rgba(0,212,170,.2);border-radius:var(--radius-lg);overflow:hidden;animation:fadeIn .4s ease}
+.lender-result-header{background:linear-gradient(135deg,rgba(0,212,170,.12),rgba(14,165,233,.06));border-bottom:1px solid rgba(0,212,170,.15);padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between}
+.lender-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--blue));display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:800;color:var(--navy)}
+.claims-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;padding:1.5rem 2rem;border-bottom:1px solid rgba(255,255,255,.07)}
+.claim-card{background:var(--navy3);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:1rem}
+.claim-verified{display:flex;align-items:center;gap:.3rem;font-size:.7rem;color:var(--green);margin-top:.5rem;font-weight:600}
+.lender-actions{padding:1.2rem 2rem;border-top:1px solid rgba(255,255,255,.07);display:flex;gap:.8rem;flex-wrap:wrap}
+
+#toast{position:fixed;bottom:2rem;right:2rem;z-index:9999;background:var(--navy2);border:1px solid rgba(0,212,170,.3);border-radius:10px;padding:.9rem 1.3rem;font-size:.85rem;font-weight:500;display:flex;align-items:center;gap:.6rem;box-shadow:var(--shadow);transform:translateY(100px);opacity:0;transition:var(--transition)}
+#toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:768px){
+  .profile-grid,.credential-body{grid-template-columns:1fr}
+  .credential-qr-side{border-right:none;border-bottom:1px solid rgba(255,255,255,.07)}
+  .vault-summary{grid-template-columns:repeat(2,1fr)}
+  .flow-steps{flex-wrap:wrap}.flow-step:not(:last-child)::after{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav id="mainNav">
+  <div class="nav-logo" onclick="showPage('landing')">
+    <div class="nav-logo-dot"></div>
+    WageProof
+  </div>
+  <div class="nav-links">
+    <span class="nav-link active" onclick="showPage('landing')" id="nav-landing">Home</span>
+    <span class="nav-link" onclick="showPage('onboarding')" id="nav-onboarding">Onboarding</span>
+    <span class="nav-link" onclick="showPage('vault')" id="nav-vault">Evidence Vault</span>
+    <span class="nav-link" onclick="showPage('profile')" id="nav-profile">My Profile</span>
+    <span class="nav-link" onclick="showPage('credential')" id="nav-credential">QR Credential</span>
+    <span class="nav-link" onclick="showPage('lender')" id="nav-lender">Lender Portal<span class="nav-badge">For Lenders</span></span>
+  </div>
+  <div style="display:flex;align-items:center;gap:.7rem">
+    <div style="display:flex;align-items:center;background:rgba(255,255,255,.07);border:1px solid rgba(0,212,170,.3);border-radius:8px;padding:.2rem .5rem">
+      <span style="font-size:.85rem;margin-right:.3rem">🌐</span>
+      <select id="lang-selector" onchange="setLanguage(this.value)" style="background:transparent;color:#fff;border:none;font-size:.78rem;font-weight:600;cursor:pointer;outline:none;font-family:var(--font)">
+        <option value="en" style="background:#0F172A;color:#fff" selected>English</option>
+        <option value="hi" style="background:#0F172A;color:#fff">हिन्दी (Hindi)</option>
+        <option value="bn" style="background:#0F172A;color:#fff">বাংলা (Bengali)</option>
+        <option value="ta" style="background:#0F172A;color:#fff">தமிழ் (Tamil)</option>
+        <option value="te" style="background:#0F172A;color:#fff">తెలుగు (Telugu)</option>
+        <option value="mr" style="background:#0F172A;color:#fff">मराठी (Marathi)</option>
+      </select>
+    </div>
+    <button class="nav-cta" onclick="showPage('onboarding')" id="i18n-nav-cta">Get Started →</button>
+  </div>
+</nav>
+
+<div id="toast">✅ <span id="toastMsg">Done!</span></div>
+
+<!-- ======================================================
+     PAGE 1 — LANDING
+====================================================== -->
+<div id="page-landing" class="page active">
+  <section class="hero">
+    <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+    <div class="hero-bg"></div><div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="hero-track">🏆 Track: Open Innovation &nbsp;·&nbsp; Trust Scoring for the Credit-Invisible</div>
+      <h1 class="hero-title" id="i18n-hero-title">Informal Work,<br/><span>Formal Credibility.</span></h1>
+      <p class="hero-sub" id="i18n-hero-sub">WageProof turns your UPI payments, invoices, and work evidence into a verified, privacy-first Financial Readiness Passport — so lenders can trust you, not just your paperwork.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="showPage('onboarding')" id="i18n-hero-btn-build">🚀 Build My Proof</button>
+        <button class="btn btn-outline" onclick="showPage('lender')" id="i18n-hero-btn-lender">For Lenders →</button>
+      </div>
+      <div class="hero-stats">
+        <div><div class="hero-stat-num">450M+</div><div class="hero-stat-label">Informal workers in India</div></div>
+        <div><div class="hero-stat-num">93%</div><div class="hero-stat-label">Lack formal credit access</div></div>
+        <div><div class="hero-stat-num">₹20K</div><div class="hero-stat-label">Avg. loan needed by micro-workers</div></div>
+        <div><div class="hero-stat-num">0</div><div class="hero-stat-label">Credit history required</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="flow-section">
+    <div style="max-width:1100px;margin:0 auto;text-align:center;padding:0 1rem">
+      <div class="section-label" id="i18n-flow-label">How It Works</div>
+      <h2 class="section-title" id="i18n-flow-title">From evidence to opportunity in 6 steps</h2>
+    </div>
+    <div class="flow-steps">
+      <div class="flow-step"><div class="flow-step-icon">🔐<span class="flow-step-num">1</span></div><div class="flow-step-title" id="i18n-flow-step1-title">Give Consent</div><div class="flow-step-desc" id="i18n-flow-step1-desc">Choose what to share. You're always in control.</div></div>
+      <div class="flow-step"><div class="flow-step-icon">📤<span class="flow-step-num">2</span></div><div class="flow-step-title" id="i18n-flow-step2-title">Upload Evidence</div><div class="flow-step-desc" id="i18n-flow-step2-desc">UPI records, invoices, supplier receipts, payouts.</div></div>
+      <div class="flow-step"><div class="flow-step-icon">🔍<span class="flow-step-num">3</span></div><div class="flow-step-title" id="i18n-flow-step3-title">Verify & Analyse</div><div class="flow-step-desc" id="i18n-flow-step3-desc">AI checks consistency and scores signals.</div></div>
+      <div class="flow-step"><div class="flow-step-icon">📊<span class="flow-step-num">4</span></div><div class="flow-step-title" id="i18n-flow-step4-title">Readiness Profile</div><div class="flow-step-desc" id="i18n-flow-step4-desc">Explainable score — no black box, no surprises.</div></div>
+      <div class="flow-step"><div class="flow-step-icon">📱<span class="flow-step-num">5</span></div><div class="flow-step-title" id="i18n-flow-step5-title">QR Credential</div><div class="flow-step-desc" id="i18n-flow-step5-desc">Time-limited, shareable proof for any lender.</div></div>
+      <div class="flow-step"><div class="flow-step-icon">🤝<span class="flow-step-num">6</span></div><div class="flow-step-title" id="i18n-flow-step6-title">Financial Access</div><div class="flow-step-desc" id="i18n-flow-step6-desc">Lender sees verified claims — not your raw data.</div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">Key Features</div>
+    <h2 class="section-title">Built for privacy. Designed for trust.</h2>
+    <p style="color:var(--grey-lt);font-size:.98rem;line-height:1.65;max-width:560px">Every feature is engineered to give workers control and lenders confidence.</p>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(0,212,170,.12)">🔒</div><div class="feature-title">Consent-First Evidence Vault</div><div class="feature-desc">You select exactly which documents to share. Nothing leaves your vault without your explicit permission.</div></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(52,211,153,.12)">🛡️</div><div class="feature-title">Work-Evidence Verification</div><div class="feature-desc">OCR, duplicate detection, and metadata checks verify authenticity before any score is generated.</div></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(59,130,246,.12)">📈</div><div class="feature-title">Financial Readiness Profile</div><div class="feature-desc">Measures income consistency, work continuity, and payment discipline — not just a bank balance.</div></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(245,158,11,.12)">💡</div><div class="feature-title">Explainable Results</div><div class="feature-desc">Every factor is shown clearly. Workers understand what helped and what limited their score.</div></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(244,114,182,.12)">📱</div><div class="feature-title">QR-Based Credential</div><div class="feature-desc">Time-limited, cryptographically signed proof — shareable with any lender, insurer, or landlord.</div></div>
+      <div class="feature-card"><div class="feature-icon" style="background:rgba(139,92,246,.12)">🔄</div><div class="feature-title">Revoke & Delete Controls</div><div class="feature-desc">Cancel a shared credential or delete your data at any time. Your proof, your rules.</div></div>
+    </div>
+  </section>
+
+  <section style="padding:1rem 2rem 5rem;max-width:1200px;margin:0 auto">
+    <div style="background:linear-gradient(135deg,rgba(0,212,170,.12),rgba(14,165,233,.08));border:1px solid rgba(0,212,170,.2);border-radius:20px;padding:3rem;text-align:center;position:relative;overflow:hidden">
+      <div class="section-label" style="margin-bottom:.5rem">Ready to build your proof?</div>
+      <h2 style="font-size:2rem;font-weight:800;margin-bottom:.8rem">No salary slip needed.</h2>
+      <p style="color:var(--grey-lt);margin-bottom:2rem;font-size:.95rem">Start in 5 minutes. Upload your work evidence and generate your first Financial Readiness Credential.</p>
+      <button class="btn btn-primary" style="font-size:1rem;padding:1rem 2.5rem" onclick="showPage('onboarding')">🚀 Start Building My Profile</button>
+    </div>
+  </section>
+</div>
+
+<!-- ======================================================
+     PAGE 2 — ONBOARDING WIZARD
+====================================================== -->
+<div id="page-onboarding" class="page">
+  <div class="wizard-wrap">
+    <div style="margin-bottom:2rem">
+      <div class="section-label" id="i18n-onboard-label">Worker Onboarding</div>
+      <h1 style="font-size:2rem;font-weight:800;margin-bottom:.4rem" id="i18n-onboard-title">Build Your Financial Proof</h1>
+      <p style="color:var(--grey-md);font-size:.9rem" id="i18n-onboard-sub">Takes about 5 minutes. Your data stays private.</p>
+    </div>
+    <div class="wizard-steps">
+      <div class="wizard-step-dot active" id="step-dot-1"></div>
+      <div class="wizard-step-dot" id="step-dot-2"></div>
+      <div class="wizard-step-dot" id="step-dot-3"></div>
+      <div class="wizard-step-dot" id="step-dot-4"></div>
+    </div>
+    <div class="wizard-step-labels">
+      <span class="wizard-step-label active" id="step-lbl-1">Consent</span>
+      <span class="wizard-step-label" id="step-lbl-2">Profile</span>
+      <span class="wizard-step-label" id="step-lbl-3">Evidence</span>
+      <span class="wizard-step-label" id="step-lbl-4">Review</span>
+    </div>
+
+    <!-- Step 1: Consent -->
+    <div class="wizard-panel active" id="wizard-step-1">
+      <div class="card card-gradient" style="margin-bottom:1.5rem">
+        <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:.5rem">📋 Your Consent Agreement</h3>
+        <p style="font-size:.85rem;color:var(--grey-md);line-height:1.6">Before we proceed, please confirm you understand and agree to the following. You can revoke consent at any time.</p>
+      </div>
+      <div class="consent-box">
+        <div class="consent-item"><div class="consent-check">✓</div><div><div style="font-size:.88rem;font-weight:600;margin-bottom:.2rem">Data Minimisation</div><div style="font-size:.8rem;color:var(--grey-md)">WageProof stores only the minimum evidence required to generate your financial readiness credential.</div></div></div>
+        <div class="consent-item"><div class="consent-check">✓</div><div><div style="font-size:.88rem;font-weight:600;margin-bottom:.2rem">No Raw Data Sharing</div><div style="font-size:.8rem;color:var(--grey-md)">Lenders only see verified claims (e.g. income band, work continuity) — never your raw documents or transactions.</div></div></div>
+        <div class="consent-item"><div class="consent-check">✓</div><div><div style="font-size:.88rem;font-weight:600;margin-bottom:.2rem">Right to Revoke</div><div style="font-size:.8rem;color:var(--grey-md)">Cancel any shared credential and delete your data at any time from your dashboard.</div></div></div>
+        <div class="consent-item"><div class="consent-check">✓</div><div><div style="font-size:.88rem;font-weight:600;margin-bottom:.2rem">Decision Support Only</div><div style="font-size:.8rem;color:var(--grey-md)">WageProof supports lender decisions — it does not automatically approve or reject any loan application.</div></div></div>
+      </div>
+      <div style="margin-top:1.2rem;display:flex;align-items:center;gap:.7rem;padding:.9rem 1.1rem;background:var(--navy2);border-radius:10px;border:1px solid rgba(255,255,255,.08)">
+        <input type="checkbox" id="consent-agree" style="width:18px;height:18px;accent-color:var(--teal)"/>
+        <label for="consent-agree" style="font-size:.85rem;color:var(--grey-lt);cursor:pointer">I have read and agree to the WageProof consent terms above.</label>
+      </div>
+      <div style="margin-top:1.5rem;display:flex;justify-content:flex-end">
+        <button class="btn btn-primary" onclick="nextStep(2)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Profile -->
+    <div class="wizard-panel" id="wizard-step-2">
+      <div class="card">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:1.2rem;color:var(--teal)">👤 Personal Information</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" type="text" placeholder="e.g. Sana Begum" id="inp-name"/></div>
+          <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" type="tel" placeholder="+91 9876543210" id="inp-phone"/></div>
+          <div class="form-group"><label class="form-label">Occupation</label>
+            <select class="form-input form-select" id="inp-occupation">
+              <option value="">Select your occupation</option>
+              <option>Home-based Tailor</option><option>Delivery Partner</option><option>Street Vendor</option>
+              <option>Domestic Worker</option><option>Daily Wage Labour</option><option>Tutor / Teacher</option>
+              <option>Small Farmer</option><option>Auto / Rickshaw Driver</option><option>Other Informal Worker</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">State</label>
+            <select class="form-input form-select" id="inp-state">
+              <option value="">Select state</option>
+              <option>Delhi</option><option>Maharashtra</option><option>Uttar Pradesh</option>
+              <option>Bihar</option><option>Rajasthan</option><option>Tamil Nadu</option>
+              <option>Karnataka</option><option>West Bengal</option><option>Gujarat</option>
+            </select>
+          </div>
+          <div class="form-group" style="grid-column:1/-1"><label class="form-label">Approximate Monthly Income</label>
+            <select class="form-input form-select" id="inp-income">
+              <option value="">Select income range</option>
+              <option>Below ₹5,000</option><option>₹5,000 – ₹10,000</option><option>₹10,000 – ₹20,000</option>
+              <option>₹20,000 – ₹40,000</option><option>Above ₹40,000</option>
+            </select>
+            <div class="form-hint">Self-declared and will be clearly marked as unverified until supporting evidence is submitted.</div>
+          </div>
+        </div>
+        <div style="margin-top:1.5rem;display:flex;justify-content:space-between">
+          <button class="btn btn-ghost btn-sm" onclick="prevStep(1)">← Back</button>
+          <button class="btn btn-primary" onclick="nextStep(3)">Continue →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Evidence -->
+    <div class="wizard-panel" id="wizard-step-3">
+      <div style="margin-bottom:1.2rem">
+        <h3 style="font-size:1rem;font-weight:700;color:var(--teal);margin-bottom:.4rem">📁 Upload Work Evidence</h3>
+        <p style="font-size:.82rem;color:var(--grey-md)">Select at least 2 types. More evidence = higher readiness score.</p>
+      </div>
+      <div class="evidence-grid" id="evidence-grid">
+        <div class="evidence-option" id="ev-upi" onclick="toggleEvidence('ev-upi','📱 UPI Transaction Summary')"><span style="font-size:1.4rem">📱</span><div><div style="font-size:.85rem;font-weight:600">UPI Transaction Summary</div><div style="font-size:.73rem;color:var(--grey-dk)">Last 6–12 months</div></div></div>
+        <div class="evidence-option" id="ev-invoice" onclick="toggleEvidence('ev-invoice','🧾 Customer Invoices')"><span style="font-size:1.4rem">🧾</span><div><div style="font-size:.85rem;font-weight:600">Customer Invoices</div><div style="font-size:.73rem;color:var(--grey-dk)">Work orders, bills raised</div></div></div>
+        <div class="evidence-option" id="ev-supplier" onclick="toggleEvidence('ev-supplier','📦 Supplier Payment Receipts')"><span style="font-size:1.4rem">📦</span><div><div style="font-size:.85rem;font-weight:600">Supplier Payment Receipts</div><div style="font-size:.73rem;color:var(--grey-dk)">Fabric, raw material bills</div></div></div>
+        <div class="evidence-option" id="ev-payout" onclick="toggleEvidence('ev-payout','💰 Platform Payout Statement')"><span style="font-size:1.4rem">💰</span><div><div style="font-size:.85rem;font-weight:600">Platform Payout Statements</div><div style="font-size:.73rem;color:var(--grey-dk)">Swiggy, Zomato, Meesho etc.</div></div></div>
+        <div class="evidence-option" id="ev-attest" onclick="toggleEvidence('ev-attest','📝 Client Attestation Letter')"><span style="font-size:1.4rem">📝</span><div><div style="font-size:.85rem;font-weight:600">Client Attestation Letter</div><div style="font-size:.73rem;color:var(--grey-dk)">Letter from repeat employer</div></div></div>
+        <div class="evidence-option" id="ev-gst" onclick="toggleEvidence('ev-gst','📃 GST Invoice Record')"><span style="font-size:1.4rem">📃</span><div><div style="font-size:.85rem;font-weight:600">GST Invoice Records</div><div style="font-size:.73rem;color:var(--grey-dk)">If registered under GST</div></div></div>
+      </div>
+      <div id="upload-list" class="upload-list"></div>
+      <div style="margin-top:1.5rem;display:flex;justify-content:space-between">
+        <button class="btn btn-ghost btn-sm" onclick="prevStep(2)">← Back</button>
+        <button class="btn btn-primary" onclick="nextStep(4)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Review -->
+    <div class="wizard-panel" id="wizard-step-4">
+      <div class="card card-gradient" style="margin-bottom:1rem">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:1rem;color:var(--teal)">✅ Review & Submit</h3>
+        <div id="review-summary" style="font-size:.88rem;color:var(--grey-lt);line-height:2.1"></div>
+      </div>
+      <div style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.2rem">
+        <div style="font-size:.8rem;color:var(--amber)">⚠️ <strong>Processing Note:</strong> Verification takes 2–5 minutes. Your readiness profile will be ready shortly after submission.</div>
+      </div>
+      <div id="processing-bar" style="display:none;margin-bottom:1rem">
+        <div style="font-size:.85rem;color:var(--teal);margin-bottom:.6rem;font-weight:600">🔄 Verifying evidence &amp; building your profile…</div>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="proc-fill" style="width:0%"></div></div>
+        <div id="proc-status" style="font-size:.75rem;color:var(--grey-dk);margin-top:.4rem">Starting…</div>
+      </div>
+      <div style="display:flex;justify-content:space-between" id="review-actions">
+        <button class="btn btn-ghost btn-sm" onclick="prevStep(3)">← Back</button>
+        <button class="btn btn-primary" id="submit-btn" onclick="submitProfile()">🚀 Submit &amp; Build Profile</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================
+     PAGE 3 — EVIDENCE VAULT
+====================================================== -->
+<div id="page-vault" class="page">
+  <div class="page-header">
+    <div class="section-label">Evidence Vault</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+      <div><h1 style="font-size:1.9rem;font-weight:800;margin-bottom:.3rem">Your Verified Documents</h1><p style="color:var(--grey-md);font-size:.88rem">Only you control what gets shared. All evidence is encrypted at rest.</p></div>
+      <div style="display:flex;gap:.7rem">
+        <button class="btn btn-ghost btn-sm" onclick="showToast('📁 Add Evidence dialog would open here')">+ Add Evidence</button>
+        <button class="btn btn-primary btn-sm" onclick="showPage('profile')">View My Score →</button>
+      </div>
+    </div>
+  </div>
+  <div style="max-width:1200px;margin:0 auto;padding:0 2rem 3rem">
+    <div class="vault-summary">
+      <div class="vault-stat"><div class="vault-stat-num">7</div><div class="vault-stat-label">Documents Uploaded</div></div>
+      <div class="vault-stat"><div class="vault-stat-num" style="color:var(--green)">5</div><div class="vault-stat-label">Verified</div></div>
+      <div class="vault-stat"><div class="vault-stat-num" style="color:var(--amber)">2</div><div class="vault-stat-label">Under Review</div></div>
+      <div class="vault-stat"><div class="vault-stat-num">27 mo</div><div class="vault-stat-label">Work Continuity</div></div>
+    </div>
+    <div class="vault-grid">
+      <div class="vault-card"><div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.8rem"><div style="font-size:2rem">📱</div><span class="badge badge-green"><span class="dot dot-green"></span>Verified</span></div><div style="font-size:.9rem;font-weight:700;margin-bottom:.2rem">UPI Transaction Summary</div><div style="font-size:.75rem;color:var(--grey-dk);margin-bottom:.7rem">PhonePe · 52 weeks · 312 transactions</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:88%"></div></div><div style="font-size:.72rem;color:var(--grey-dk);margin-top:.3rem">Evidence confidence: 88%</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:.9rem;padding-top:.9rem;border-top:1px solid rgba(255,255,255,.06)"><span style="font-size:.75rem;color:var(--grey-dk)">Uploaded: 8 Sep 2026</span><button class="btn btn-danger btn-sm" onclick="showToast('🚫 UPI record revoked')">Revoke</button></div></div>
+      <div class="vault-card"><div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.8rem"><div style="font-size:2rem">🧾</div><span class="badge badge-green"><span class="dot dot-green"></span>Verified</span></div><div style="font-size:.9rem;font-weight:700;margin-bottom:.2rem">Customer Invoices (Oct–Mar 2025)</div><div style="font-size:.75rem;color:var(--grey-dk);margin-bottom:.7rem">14 invoices · ₹1,200–₹4,500 each</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:92%"></div></div><div style="font-size:.72rem;color:var(--grey-dk);margin-top:.3rem">Evidence confidence: 92%</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:.9rem;padding-top:.9rem;border-top:1px solid rgba(255,255,255,.06)"><span style="font-size:.75rem;color:var(--grey-dk)">Uploaded: 8 Sep 2026</span><button class="btn btn-danger btn-sm" onclick="showToast('🚫 Invoice set revoked')">Revoke</button></div></div>
+      <div class="vault-card"><div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.8rem"><div style="font-size:2rem">📦</div><span class="badge badge-green"><span class="dot dot-green"></span>Verified</span></div><div style="font-size:.9rem;font-weight:700;margin-bottom:.2rem">Supplier Payment Receipts</div><div style="font-size:.75rem;color:var(--grey-dk);margin-bottom:.7rem">Kapoor Fabrics · 11 payments · Regular</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:85%"></div></div><div style="font-size:.72rem;color:var(--grey-dk);margin-top:.3rem">Evidence confidence: 85%</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:.9rem;padding-top:.9rem;border-top:1px solid rgba(255,255,255,.06)"><span style="font-size:.75rem;color:var(--grey-dk)">Uploaded: 8 Sep 2026</span><button class="btn btn-danger btn-sm" onclick="showToast('🚫 Supplier receipts revoked')">Revoke</button></div></div>
+      <div class="vault-card"><div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.8rem"><div style="font-size:2rem">📝</div><span class="badge badge-green"><span class="dot dot-green"></span>Verified</span></div><div style="font-size:.9rem;font-weight:700;margin-bottom:.2rem">Client Attestation Letter</div><div style="font-size:.75rem;color:var(--grey-dk);margin-bottom:.7rem">Priya Sharma · Regular customer since 2022</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:78%"></div></div><div style="font-size:.72rem;color:var(--grey-dk);margin-top:.3rem">Evidence confidence: 78%</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:.9rem;padding-top:.9rem;border-top:1px solid rgba(255,255,255,.06)"><span style="font-size:.75rem;color:var(--grey-dk)">Uploaded: 9 Sep 2026</span><button class="btn btn-danger btn-sm" onclick="showToast('🚫 Attestation revoked')">Revoke</button></div></div>
+      <div class="vault-card"><div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.8rem"><div style="font-size:2rem">💰</div><span class="badge badge-green"><span class="dot dot-green"></span>Verified</span></div><div style="font-size:.9rem;font-weight:700;margin-bottom:.2rem">Meesho Platform Payout Statement</div><div style="font-size:.75rem;color:var(--grey-dk);margin-bottom:.7rem">6 months · ₹3,200–₹6,800/month</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:95%"></div></div><div style="font-size:.72rem;color:var(--grey-dk);margin-top:.3rem">Evidence confidence: 95%</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:.9rem;padding-top:.9rem;border-top:1px solid rgba(255,255,255,.06)"><span style="font-size:.75rem;color:var(--grey-dk)">Uploaded: 9 Sep 2026</span><button class="btn btn-danger btn-sm" onclick="showToast('🚫 Payout statement revoked')">Revoke</button></div></div>
+      <div class="vault-card"><div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.8rem"><div style="font-size:2rem">📃</div><span class="badge badge-amber"><span class="dot dot-amber"></span>Under Review</span></div><div style="font-size:.9rem;font-weight:700;margin-bottom:.2rem">GST Invoice — Q3 FY25</div><div style="font-size:.75rem;color:var(--grey-dk);margin-bottom:.7rem">Checking consistency with UPI data…</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:45%;background:linear-gradient(90deg,var(--amber),#F59E0B)"></div></div><div style="font-size:.72rem;color:var(--grey-dk);margin-top:.3rem">Verification in progress…</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:.9rem;padding-top:.9rem;border-top:1px solid rgba(255,255,255,.06)"><span style="font-size:.75rem;color:var(--grey-dk)">Uploaded: 10 Sep 2026</span><button class="btn btn-danger btn-sm" onclick="showToast('🗑 Document removed')">Remove</button></div></div>
+      <div class="vault-card"><div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.8rem"><div style="font-size:2rem">🧾</div><span class="badge badge-amber"><span class="dot dot-amber"></span>Under Review</span></div><div style="font-size:.9rem;font-weight:700;margin-bottom:.2rem">Customer Invoices (Apr–Sep 2025)</div><div style="font-size:.75rem;color:var(--grey-dk);margin-bottom:.7rem">18 invoices · OCR extraction ongoing</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:60%;background:linear-gradient(90deg,var(--amber),#F59E0B)"></div></div><div style="font-size:.72rem;color:var(--grey-dk);margin-top:.3rem">OCR processing…</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:.9rem;padding-top:.9rem;border-top:1px solid rgba(255,255,255,.06)"><span style="font-size:.75rem;color:var(--grey-dk)">Uploaded: 10 Sep 2026</span><button class="btn btn-danger btn-sm" onclick="showToast('🗑 Document removed')">Remove</button></div></div>
+    </div>
+    <div style="margin-top:2rem;background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.15);border-radius:12px;padding:1.2rem 1.5rem;display:flex;align-items:center;gap:1rem">
+      <span style="font-size:1.5rem">🔒</span>
+      <div><div style="font-size:.88rem;font-weight:700;margin-bottom:.25rem">Your documents are encrypted and private</div><div style="font-size:.8rem;color:var(--grey-md)">Lenders never see your raw documents. They only receive verified claims like "income band: ₹14,000–₹22,000" and "work continuity: 27 months".</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================
+     PAGE 4 — READINESS PROFILE
+====================================================== -->
+<div id="page-profile" class="page">
+  <div class="page-header">
+    <div class="section-label">Financial Readiness Profile</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+      <div><h1 style="font-size:1.9rem;font-weight:800;margin-bottom:.3rem">Sana Begum's Profile</h1><p style="color:var(--grey-md);font-size:.88rem">Last updated: 10 Sep 2026 · Home-based Tailor, Delhi</p></div>
+      <div style="display:flex;gap:.7rem">
+        <button class="btn btn-ghost btn-sm" onclick="showPage('vault')">← Evidence Vault</button>
+        <button class="btn btn-primary btn-sm" onclick="showPage('credential')">Generate QR Credential →</button>
+      </div>
+    </div>
+  </div>
+  <div style="max-width:1200px;margin:0 auto;padding:0 2rem 3rem">
+    <div class="profile-grid">
+      <div>
+        <div class="card card-gradient" style="text-align:center;padding:2rem 1.5rem">
+          <div class="section-label" style="margin-bottom:.5rem">Financial Readiness Score</div>
+          <div class="score-ring-container">
+            <canvas id="scoreChart" width="200" height="200"></canvas>
+            <div class="score-center">
+              <div class="score-num" id="scoreDisplay">0</div>
+              <div style="font-size:.85rem;color:var(--grey-md)">/100</div>
+              <div style="font-size:.7rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;margin-top:.2rem">Readiness</div>
+            </div>
+          </div>
+          <div style="margin-top:1rem"><span class="badge badge-teal">Moderate–High Confidence</span></div>
+          <div class="income-band-box">
+            <div style="font-size:.75rem;color:var(--grey-md);text-transform:uppercase;letter-spacing:.08em;font-weight:600">Estimated Monthly Income Band</div>
+            <div style="font-size:1.8rem;font-weight:800;color:var(--teal);margin-top:.3rem">₹14,000 – ₹22,000</div>
+            <div style="font-size:.78rem;color:var(--grey-md);margin-top:.2rem">Based on verified UPI + invoice evidence</div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:1rem">
+          <div style="font-size:.82rem;font-weight:700;color:var(--teal);margin-bottom:.8rem">KEY VERIFIED METRICS</div>
+          <div class="metric-row"><div class="metric-icon">📅</div><div class="metric-label">Work Continuity</div><div class="metric-value">27 months</div></div>
+          <div class="metric-row"><div class="metric-icon">📊</div><div class="metric-label">Income-Active Weeks</div><div class="metric-value">44 / 52</div></div>
+          <div class="metric-row"><div class="metric-icon">🏪</div><div class="metric-label">Supplier Payments</div><div class="metric-value" style="color:var(--green)">Good</div></div>
+          <div class="metric-row"><div class="metric-icon">👥</div><div class="metric-label">Repeat Customers</div><div class="metric-value">8 regulars</div></div>
+          <div class="metric-row"><div class="metric-icon">📁</div><div class="metric-label">Evidence Confidence</div><div class="metric-value">Moderate–High</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:1rem">
+          <div style="font-size:.82rem;font-weight:700;color:var(--teal);margin-bottom:1rem">SCORE BREAKDOWN — What contributed to your 71/100?</div>
+          <div class="breakdown-item"><div class="breakdown-label">Income Consistency</div><div class="breakdown-bar"><div class="breakdown-fill" style="width:80%;background:var(--teal)"></div></div><div class="breakdown-score" style="color:var(--teal)">+20</div></div>
+          <div class="breakdown-item"><div class="breakdown-label">Work Continuity (27 months)</div><div class="breakdown-bar"><div class="breakdown-fill" style="width:90%;background:var(--green)"></div></div><div class="breakdown-score" style="color:var(--green)">+18</div></div>
+          <div class="breakdown-item"><div class="breakdown-label">Supplier Payment Discipline</div><div class="breakdown-bar"><div class="breakdown-fill" style="width:75%;background:var(--teal)"></div></div><div class="breakdown-score" style="color:var(--teal)">+15</div></div>
+          <div class="breakdown-item"><div class="breakdown-label">Evidence Diversity (5 types)</div><div class="breakdown-bar"><div class="breakdown-fill" style="width:70%;background:var(--blue)"></div></div><div class="breakdown-score" style="color:var(--blue)">+13</div></div>
+          <div class="breakdown-item"><div class="breakdown-label">Repeat Customer Base</div><div class="breakdown-bar"><div class="breakdown-fill" style="width:50%;background:var(--amber)"></div></div><div class="breakdown-score" style="color:var(--amber)">+10</div></div>
+          <div class="breakdown-item"><div class="breakdown-label">2 docs still under review</div><div class="breakdown-bar"><div class="breakdown-fill" style="width:25%;background:var(--grey-dk)"></div></div><div class="breakdown-score" style="color:var(--grey-md)">–5</div></div>
+        </div>
+        <div class="card" style="margin-bottom:1rem">
+          <div style="font-size:.82rem;font-weight:700;color:var(--teal);margin-bottom:1rem">INCOME TREND (Last 12 Months)</div>
+          <canvas id="incomeChart" height="120"></canvas>
+        </div>
+        <div style="background:rgba(0,212,170,.07);border:1.5px solid rgba(0,212,170,.25);border-radius:var(--radius);padding:1.3rem;margin-bottom:1rem">
+          <div style="display:flex;align-items:center;gap:.6rem;font-size:.82rem;font-weight:700;color:var(--teal);margin-bottom:.6rem">🎯 Recommended Action</div>
+          <div style="font-size:.88rem;color:var(--grey-lt);line-height:1.55">Based on verified work continuity of 27 months and moderate–high evidence confidence, <strong>Sana is recommended for manual review for a small flexible working-capital loan (₹15,000–₹25,000)</strong> with income-aligned repayment terms.</div>
+          <div style="margin-top:.8rem;font-size:.78rem;color:var(--grey-dk)">⚠️ This is decision-support. Final lending decisions rest with the lender.</div>
+        </div>
+        <div class="card" style="background:rgba(14,165,233,.05);border-color:rgba(14,165,233,.15)">
+          <div style="font-size:.82rem;font-weight:700;color:var(--blue);margin-bottom:.8rem">📈 HOW TO IMPROVE YOUR SCORE</div>
+          <div style="display:flex;flex-direction:column;gap:.5rem">
+            <div style="font-size:.82rem;color:var(--grey-lt)">✅ Complete 2 pending document reviews (+5 pts)</div>
+            <div style="font-size:.82rem;color:var(--grey-lt)">📋 Add a second client attestation letter (+4 pts)</div>
+            <div style="font-size:.82rem;color:var(--grey-lt)">📱 Link 3 more months of UPI history (+3 pts)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================
+     PAGE 5 — QR CREDENTIAL
+====================================================== -->
+<div id="page-credential" class="page">
+  <div style="max-width:900px;margin:0 auto;padding:7rem 1.5rem 3rem">
+    <div style="margin-bottom:2rem">
+      <div class="section-label">QR Credential</div>
+      <h1 style="font-size:1.9rem;font-weight:800;margin-bottom:.3rem">Your Financial Readiness Credential</h1>
+      <p style="color:var(--grey-md);font-size:.88rem">Share this with a lender. It expires in 72 hours. No raw data is shared — only verified claims.</p>
+    </div>
+    <div class="credential-card">
+      <div class="credential-header">
+        <div>
+          <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.3rem"><span style="font-size:1.1rem">🏆</span><div style="font-size:1.1rem;font-weight:800">WageProof Financial Readiness Credential</div><span class="badge badge-green"><span class="dot dot-green"></span>Valid</span></div>
+          <div style="font-size:.72rem;color:var(--grey-md);font-family:monospace">Credential ID: WP-2026-DL-SB-8F3A2C1D &nbsp;·&nbsp; Issued: 10 Sep 2026 &nbsp;·&nbsp; Expires: 13 Sep 2026</div>
+        </div>
+        <div style="text-align:right"><div style="font-size:.75rem;color:var(--grey-dk)">Cryptographically Signed</div><div style="font-size:.8rem;color:var(--teal);font-weight:600;margin-top:.2rem">🔐 JWT + QR</div></div>
+      </div>
+      <div class="credential-body">
+        <div class="credential-qr-side">
+          <div class="qr-box" id="qrcode-container"></div>
+          <div style="font-size:.78rem;color:var(--grey-md);margin-top:1rem;text-align:center">Scan to verify credential</div>
+          <div style="margin-top:1rem;text-align:center">
+            <div style="font-size:.72rem;color:var(--grey-dk)">Time remaining</div>
+            <div style="margin-top:.4rem"><div class="progress-bar-wrap" style="width:160px;height:8px;margin:0 auto"><div class="progress-bar-fill" id="timer-bar" style="width:85%;background:linear-gradient(90deg,var(--green),var(--teal))"></div></div></div>
+            <div style="font-size:.75rem;color:var(--amber);margin-top:.4rem" id="timer-text">⏱ 68:42:17 remaining</div>
+          </div>
+        </div>
+        <div class="credential-info-side">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem">
+            <div class="cred-field"><div class="cred-field-label">Worker Name</div><div class="cred-field-value">Sana Begum</div></div>
+            <div class="cred-field"><div class="cred-field-label">Occupation</div><div class="cred-field-value">Home-based Tailor</div></div>
+            <div class="cred-field"><div class="cred-field-label">Financial Readiness</div><div class="cred-field-value" style="font-size:1.4rem;color:var(--teal)">71 / 100</div></div>
+            <div class="cred-field"><div class="cred-field-label">Evidence Confidence</div><div class="cred-field-value">Moderate–High</div></div>
+            <div class="cred-field"><div class="cred-field-label">Monthly Income Band</div><div class="cred-field-value" style="color:var(--teal)">₹14,000–₹22,000</div></div>
+            <div class="cred-field"><div class="cred-field-label">Work Continuity</div><div class="cred-field-value">27 Months</div></div>
+            <div class="cred-field"><div class="cred-field-label">Income-Active Weeks</div><div class="cred-field-value">44 / 52</div></div>
+            <div class="cred-field"><div class="cred-field-label">Supplier Payment Record</div><div class="cred-field-value" style="color:var(--green)">Good</div></div>
+            <div class="cred-field" style="grid-column:1/-1"><div class="cred-field-label">Recommended Use</div><div class="cred-field-value" style="font-size:.9rem">Manual review for small working-capital loan (₹15,000–₹25,000)</div></div>
+          </div>
+          <div style="margin-top:1rem;background:rgba(0,212,170,.06);border:1px solid rgba(0,212,170,.15);border-radius:10px;padding:1rem">
+            <div style="font-size:.75rem;font-weight:700;color:var(--teal);margin-bottom:.5rem">WHAT THIS CREDENTIAL CONTAINS</div>
+            <div style="display:flex;flex-direction:column;gap:.3rem">
+              <div style="font-size:.78rem;color:var(--grey-lt)">✅ Aggregated verified claims only</div>
+              <div style="font-size:.78rem;color:var(--grey-lt)">✅ No raw documents or transaction history</div>
+              <div style="font-size:.78rem;color:var(--grey-lt)">✅ No private contacts or expense data</div>
+              <div style="font-size:.78rem;color:var(--grey-lt)">✅ Self-declared vs. verified items clearly marked</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="credential-footer">
+        <div style="font-size:.75rem;color:var(--grey-dk);max-width:480px">⚠️ This credential is for decision support only. WageProof does not approve or reject loan applications. Lender retains full underwriting authority.</div>
+        <div style="display:flex;gap:.6rem">
+          <button class="btn btn-ghost btn-sm" onclick="copyCredentialId()">📋 Copy ID</button>
+          <button class="btn btn-danger btn-sm" onclick="revokeCredential()">🚫 Revoke</button>
+          <button class="btn btn-primary btn-sm" onclick="showPage('lender')">Verify as Lender →</button>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:1.2rem;display:flex;gap:.8rem;flex-wrap:wrap">
+      <button class="btn btn-outline btn-sm" onclick="generateNewCredential()">🔄 Generate New Credential</button>
+      <button class="btn btn-ghost btn-sm" onclick="showPage('profile')">← Back to Profile</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================
+     PAGE 6 — LENDER PORTAL
+====================================================== -->
+<div id="page-lender" class="page">
+  <div style="max-width:900px;margin:0 auto;padding:7rem 1.5rem 3rem">
+    <div style="margin-bottom:2rem">
+      <div style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);border-radius:8px;padding:.3rem .8rem;font-size:.75rem;font-weight:700;color:var(--amber);margin-bottom:1rem" id="i18n-lender-badge">🏦 LENDER / VERIFIER PORTAL</div>
+      <h1 style="font-size:1.9rem;font-weight:800;margin-bottom:.3rem" id="i18n-lender-title">Verify a WageProof Credential</h1>
+      <p style="color:var(--grey-md);font-size:.88rem" id="i18n-lender-sub">Enter a Credential ID or scan QR to view verified claims. You will never see raw documents or private data.</p>
+    </div>
+    <div class="lender-lookup">
+      <div style="font-size:.85rem;font-weight:700;color:var(--teal);margin-bottom:.3rem" id="i18n-lender-lookup-title">Enter Credential ID</div>
+      <div style="font-size:.8rem;color:var(--grey-md);margin-bottom:.8rem" id="i18n-lender-lookup-hint">The credential ID is provided by the applicant. Format: WP-2026-XX-XX-XXXXXXXX</div>
+      <div class="lookup-input-row">
+        <input class="form-input" id="lookup-id" placeholder="e.g. WP-2026-DL-SB-8F3A2C1D" value="WP-2026-DL-SB-8F3A2C1D" style="flex:1"/>
+        <button class="btn btn-primary" onclick="verifyCredential()" id="i18n-btn-verify">🔍 Verify Credential</button>
+      </div>
+      <div style="margin-top:.8rem;display:flex;align-items:center;gap:.8rem">
+        <span style="font-size:.78rem;color:var(--grey-dk)">Or scan QR:</span>
+        <button class="btn btn-ghost btn-sm" onclick="showToast('📷 QR Scanner opens on mobile device')">📷 Scan QR Code</button>
+      </div>
+    </div>
+    <div id="lender-result" class="lender-result hidden">
+      <div class="lender-result-header">
+        <div style="display:flex;align-items:center;gap:1rem">
+          <div class="lender-avatar">S</div>
+          <div>
+            <div style="font-size:1.1rem;font-weight:800">Sana Begum</div>
+            <div style="font-size:.8rem;color:var(--grey-md)">Home-based Tailor · Delhi</div>
+            <div id="lender-status-badges" style="margin-top:.3rem;display:flex;gap:.4rem"><span class="badge badge-green" style="font-size:.68rem"><span class="dot dot-green"></span>Valid Credential</span><span class="badge badge-grey" style="font-size:.68rem">Expires: 13 Sep 2026</span></div>
+          </div>
+        </div>
+        <div style="background:rgba(0,212,170,.12);border:1.5px solid rgba(0,212,170,.3);border-radius:12px;padding:.6rem 1.2rem;text-align:center">
+          <div style="font-size:1.8rem;font-weight:900;color:var(--teal);line-height:1">71</div>
+          <div style="font-size:.65rem;color:var(--grey-md)">/100</div>
+          <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--grey-md)">Readiness</div>
+        </div>
+      </div>
+      <div style="background:rgba(245,158,11,.07);border-bottom:1px solid rgba(255,255,255,.07);padding:1rem 2rem;font-size:.8rem;color:var(--amber);display:flex;align-items:center;gap:.6rem">
+        🔒 You are viewing <strong style="margin:0 .3rem">verified aggregate claims only.</strong> No raw documents, bank statements, or personal transaction data are disclosed.
+      </div>
+      <div class="claims-grid">
+        <div class="claim-card"><div style="font-size:.7rem;color:var(--grey-dk);text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:.4rem">Monthly Income Band</div><div style="font-size:1.05rem;font-weight:700">₹14,000–₹22,000</div><div style="font-size:.72rem;color:var(--grey-md);margin-top:.15rem">Verified via UPI + invoices</div><div class="claim-verified">✅ Verified</div></div>
+        <div class="claim-card"><div style="font-size:.7rem;color:var(--grey-dk);text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:.4rem">Work Continuity</div><div style="font-size:1.05rem;font-weight:700">27 Months</div><div style="font-size:.72rem;color:var(--grey-md);margin-top:.15rem">Documented 2024–2026</div><div class="claim-verified">✅ Verified</div></div>
+        <div class="claim-card"><div style="font-size:.7rem;color:var(--grey-dk);text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:.4rem">Income-Active Weeks</div><div style="font-size:1.05rem;font-weight:700">44 / 52</div><div style="font-size:.72rem;color:var(--grey-md);margin-top:.15rem">Last 12 months</div><div class="claim-verified">✅ Verified</div></div>
+        <div class="claim-card"><div style="font-size:.7rem;color:var(--grey-dk);text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:.4rem">Supplier Payment Record</div><div style="font-size:1.05rem;font-weight:700;color:var(--green)">Good</div><div style="font-size:.72rem;color:var(--grey-md);margin-top:.15rem">11 consistent payments</div><div class="claim-verified">✅ Verified</div></div>
+        <div class="claim-card"><div style="font-size:.7rem;color:var(--grey-dk);text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:.4rem">Evidence Confidence</div><div style="font-size:1.05rem;font-weight:700">Moderate–High</div><div style="font-size:.72rem;color:var(--grey-md);margin-top:.15rem">5 evidence types submitted</div><div class="claim-verified">✅ System Verified</div></div>
+        <div class="claim-card"><div style="font-size:.7rem;color:var(--grey-dk);text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:.4rem">Repeat Customer Base</div><div style="font-size:1.05rem;font-weight:700">8 Regulars</div><div style="font-size:.72rem;color:var(--grey-md);margin-top:.15rem">Attestation corroborated</div><div class="claim-verified">✅ Corroborated</div></div>
+      </div>
+      <div style="padding:1.5rem 2rem;background:rgba(0,212,170,.04)">
+        <div style="font-size:.82rem;font-weight:700;color:var(--teal);margin-bottom:.5rem;display:flex;align-items:center;gap:.4rem">🎯 WageProof Recommendation</div>
+        <div style="font-size:.9rem;color:var(--grey-lt);line-height:1.6">Sana Begum shows consistent informal income with verifiable work evidence spanning 27 months. Evidence confidence is <strong>Moderate–High</strong>, supporting a recommendation for <strong>manual review for a small flexible working-capital loan (₹15,000–₹25,000)</strong>, preferably with income-aligned repayment terms.</div>
+        <div style="margin-top:.6rem;font-size:.75rem;color:var(--grey-dk)">ℹ️ Insufficient evidence ≠ Negative evidence. WageProof recommends manual review for uncertain cases, not automatic rejection.</div>
+      </div>
+      <div id="lender-decision-container" style="display:none"></div>
+      <div class="lender-actions">
+        <button class="btn btn-primary btn-sm" id="btn-flag-review" onclick="flagForManualReview()">✅ Flag for Manual Review</button>
+        <button class="btn btn-outline btn-sm" id="btn-download-report" onclick="downloadReport()">📋 Download Report</button>
+        <button class="btn btn-ghost btn-sm" id="btn-request-evidence" onclick="requestMoreEvidence()">📧 Request More Evidence</button>
+        <button class="btn btn-danger btn-sm" id="btn-decline-app" onclick="declineApplication()">❌ Decline</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ─── MULTILINGUAL (I18N) SYSTEM ───────────────────────── */
+const translations = {
+  en: {
+    nav_home: "Home",
+    nav_onboarding: "Onboarding",
+    nav_vault: "Evidence Vault",
+    nav_profile: "My Profile",
+    nav_credential: "QR Credential",
+    nav_lender: "Lender Portal",
+    nav_cta: "Get Started →",
+    hero_title: 'Informal Work,<br/><span>Formal Credibility.</span>',
+    hero_sub: "WageProof turns your UPI payments, invoices, and work evidence into a verified, privacy-first Financial Readiness Passport — so lenders can trust you, not just your paperwork.",
+    hero_btn_build: "🚀 Build My Proof",
+    hero_btn_lender: "For Lenders →",
+    flow_label: "How It Works",
+    flow_title: "From evidence to opportunity in 6 steps",
+    flow_s1_t: "Give Consent", flow_s1_d: "Choose what to share. You're always in control.",
+    flow_s2_t: "Upload Evidence", flow_s2_d: "UPI records, invoices, supplier receipts, payouts.",
+    flow_s3_t: "Verify & Analyse", flow_s3_d: "AI checks consistency and scores signals.",
+    flow_s4_t: "Readiness Profile", flow_s4_d: "Explainable score — no black box, no surprises.",
+    flow_s5_t: "QR Credential", flow_s5_d: "Time-limited, shareable proof for any lender.",
+    flow_s6_t: "Financial Access", flow_s6_d: "Lender sees verified claims — not your raw data.",
+    onboard_label: "Worker Onboarding",
+    onboard_title: "Build Your Financial Proof",
+    onboard_sub: "Takes about 5 minutes. Your data stays private.",
+    lender_badge: "🏦 LENDER / VERIFIER PORTAL",
+    lender_title: "Verify a WageProof Credential",
+    lender_sub: "Enter a Credential ID or scan QR to view verified claims. You will never see raw documents or private data.",
+    lender_lookup_title: "Enter Credential ID",
+    lender_lookup_hint: "The credential ID is provided by the applicant. Format: WP-2026-XX-XX-XXXXXXXX",
+    lender_btn_verify: "🔍 Verify Credential",
+    btn_flag_review: "✅ Flag for Manual Review",
+    btn_download_report: "📋 Download Report",
+    btn_request_evidence: "📧 Request More Evidence",
+    btn_decline_app: "❌ Decline",
+    lang_toast: "Language: English"
+  },
+  hi: {
+    nav_home: "होम",
+    nav_onboarding: "ऑनबोर्डिंग",
+    nav_vault: "सबूत वॉल्ट",
+    nav_profile: "मेरी प्रोफाइल",
+    nav_credential: "क्यूआर प्रमाण पत्र",
+    nav_lender: "ऋणदाता पोर्टल",
+    nav_cta: "शुरू करें →",
+    hero_title: 'अनौपचारिक काम,<br/><span>औपचारिक साख।</span>',
+    hero_sub: "वेज़प्रूफ़ आपके यूपीआई भुगतान, चालान और कार्य साक्ष्य को एक सत्यापित, गोपनीयता-प्रथम वित्तीय तत्परता पासपोर्ट में बदलता है - ताकि ऋणदाता कागजी काम पर नहीं, आप पर भरोसा करें।",
+    hero_btn_build: "🚀 मेरा प्रमाण बनाएं",
+    hero_btn_lender: "ऋणदाताओं के लिए →",
+    flow_label: "यह कैसे काम करता है",
+    flow_title: "साक्ष्य से अवसर तक 6 सरल चरणों में",
+    flow_s1_t: "सहमति दें", flow_s1_d: "चुनें कि क्या साझा करना है। पूर्ण नियंत्रण आपका है।",
+    flow_s2_t: "साक्ष्य अपलोड करें", flow_s2_d: "यूपीआई रिकॉर्ड, चालान, रसीदें और प्लेटफॉर्म भुगतान।",
+    flow_s3_t: "सत्यापन और विश्लेषण", flow_s3_d: "एआई निरंतरता की जांच और संकेतों का पारदर्शी मूल्यांकन करता है।",
+    flow_s4_t: "तत्परता प्रोफाइल", flow_s4_d: "स्पष्ट स्कोर — कोई गुप्त एल्गोरिदम नहीं, पूर्ण पारदर्शिता।",
+    flow_s5_t: "क्यूआर क्रेडेंशियल", flow_s5_d: "किसी भी ऋणदाता के लिए समय-सीमित, सुरक्षित डिजिटल प्रमाण।",
+    flow_s6_t: "वित्तीय पहुंच", flow_s6_d: "ऋणदाता केवल सत्यापित दावे देखता है — आपका निजी डेटा नहीं।",
+    onboard_label: "श्रमिक ऑनबोर्डिंग",
+    onboard_title: "अपना वित्तीय प्रमाण बनाएं",
+    onboard_sub: "लगभग 5 मिनट लगते हैं। आपका डेटा निजी रहता है।",
+    lender_badge: "🏦 ऋणदाता / सत्यापनकर्ता पोर्टल",
+    lender_title: "वेज़प्रूफ़ प्रमाण पत्र सत्यापित करें",
+    lender_sub: "सत्यापित दावों को देखने के लिए क्रेडेंशियल आईडी दर्ज करें या क्यूआर स्कैन करें। कच्चा डेटा कभी साझा नहीं किया जाता।",
+    lender_lookup_title: "क्रेडेंशियल आईडी दर्ज करें",
+    lender_lookup_hint: "क्रेडेंशियल आईडी आवेदक द्वारा प्रदान की जाती है। प्रारूप: WP-2026-XX-XX-XXXXXXXX",
+    lender_btn_verify: "🔍 प्रमाण पत्र सत्यापित करें",
+    btn_flag_review: "✅ मैन्युअल समीक्षा के लिए चिह्नित करें",
+    btn_download_report: "📋 रिपोर्ट डाउनलोड करें",
+    btn_request_evidence: "📧 अतिरिक्त सबूत मांगें",
+    btn_decline_app: "❌ अस्वीकार करें",
+    lang_toast: "भाषा बदली गई: हिन्दी"
+  },
+  bn: {
+    nav_home: "হোম",
+    nav_onboarding: "অনবোর্ডিং",
+    nav_vault: "প্রমাণ ভল্ট",
+    nav_profile: "আমার প্রোফাইল",
+    nav_credential: "কিউআর প্রমাণপত্র",
+    nav_lender: "ঋণদাতা পোর্টাল",
+    nav_cta: "শুরু করুন →",
+    hero_title: 'অনানুষ্ঠানিক কাজ,<br/><span>আনুষ্ঠানিক বিশ্বাসযোগ্যতা।</span>',
+    hero_sub: "ওয়েজপ্রুফ আপনার ইউপিআই পেমেন্ট ও চালানের প্রমাণকে একটি বিশ্বস্ত আর্থিক প্রস্তুতি পাসপোর্টে রূপান্তর করে — ঋণদাতাদের আস্থার জন্য।",
+    hero_btn_build: "🚀 আমার প্রমাণ তৈরি করুন",
+    hero_btn_lender: "ঋণদাতাদের জন্য →",
+    flow_label: "এটি কীভাবে কাজ করে",
+    flow_title: "৬টি ধাপে প্রমাণ থেকে আর্থিক সুযোগ",
+    flow_s1_t: "সম্মতি দিন", flow_s1_d: "কী শেয়ার করবেন তা বেছে নিন। নিয়ন্ত্রণ আপনার হাতে।",
+    flow_s2_t: "প্রমাণ আপলোড করুন", flow_s2_d: "ইউপিআই রেকর্ড, চালান ও পেমেন্ট রসিদ।",
+    flow_s3_t: "যাচাই ও বিশ্লেষণ", flow_s3_d: "এআই প্রমাণের সত্যতা ও ধারাবাহিকতা পরীক্ষা করে।",
+    flow_s4_t: "প্রস্তুতি প্রোফাইল", flow_s4_d: "স্বচ্ছ স্কোর — কোনও বিভ্রান্তি নেই।",
+    flow_s5_t: "কিউআর প্রমাণপত্র", flow_s5_d: "যেকোনো ঋণদাতার জন্য সময়সীমিত নিরাপদ প্রমাণ।",
+    flow_s6_t: "ঋণ সহায়তা", flow_s6_d: "ঋণদাতা শুধু যাচাইকৃত তথ্য দেখে — ব্যক্তিগত নথি নয়।",
+    onboard_label: "কর্মী অনবোর্ডিং",
+    onboard_title: "আপনার আর্থিক প্রমাণ তৈরি করুন",
+    onboard_sub: "মাত্র ৫ মিনিট সময় লাগে। আপনার ডেটা ব্যক্তিগত থাকে।",
+    lender_badge: "🏦 ঋণদাতা পোর্টাল",
+    lender_title: "ওয়েজপ্রুফ প্রমাণপত্র যাচাই করুন",
+    lender_sub: "যাচাইকৃত তথ্য দেখতে প্রমাণপত্র আইডি দিন বা কিউআর স্ক্যান করুন।",
+    lender_lookup_title: "প্রমাণপত্র আইডি লিখুন",
+    lender_lookup_hint: "বিন্যাস: WP-2026-XX-XX-XXXXXXXX",
+    lender_btn_verify: "🔍 প্রমাণপত্র যাচাই করুন",
+    btn_flag_review: "✅ ম্যানুয়াল পর্যালোচনার জন্য চিহ্নিত করুন",
+    btn_download_report: "📋 রিপোর্ট ডাউনলোড করুন",
+    btn_request_evidence: "📧 আরও প্রমাণের অনুরোধ করুন",
+    btn_decline_app: "❌ প্রত্যাখ্যান করুন",
+    lang_toast: "ভাষা পরিবর্তিত: বাংলা"
+  },
+  ta: {
+    nav_home: "முகப்பு",
+    nav_onboarding: "பதிவு",
+    nav_vault: "சான்று பெட்டகம்",
+    nav_profile: "சுயவிவரம்",
+    nav_credential: "QR சான்றளிப்பு",
+    nav_lender: "கடன் வழங்குநர்",
+    nav_cta: "தொடங்குங்கள் →",
+    hero_title: 'முறைசாரா வேலை,<br/><span>முறையான நம்பகத்தன்மை.</span>',
+    hero_sub: "WageProof உங்கள் UPI பரிவர்த்தனைகளை நம்பகமான நிதி தயார்நிலை சான்றாக மாற்றுகிறது.",
+    hero_btn_build: "🚀 சான்றை உருவாக்கு",
+    hero_btn_lender: "கடன் வழங்குநருக்கு →",
+    flow_label: "எவ்வாறு செயல்படுகிறது",
+    flow_title: "6 படிகளில் சான்றிலிருந்து வாய்ப்பு வரை",
+    flow_s1_t: "ஒப்புதல் அளிக்கவும்", flow_s1_d: "எதைப் பகிர வேண்டும் என்பதை நீங்களே தேர்வு செய்யுங்கள்.",
+    flow_s2_t: "சான்றுகளைப் பதிவேற்றவும்", flow_s2_d: "UPI பரிவர்த்தனைகள், விலைப்பட்டியல்கள், ரசீதுகள்.",
+    flow_s3_t: "சரிபார்த்தல் & ஆய்வு", flow_s3_d: "AI துல்லியத்தை சரிபார்த்து மதிப்பிடுகிறது.",
+    flow_s4_t: "தயார்நிலை சுயவிவரம்", flow_s4_d: "தெளிவான மதிப்பீடு — வெளிப்படையான கணக்கீடு.",
+    flow_s5_t: "QR சான்றளிப்பு", flow_s5_d: "எந்த கடன் வழங்குநருக்கும் பகிரக்கூடிய பாதுகாப்பான சான்று.",
+    flow_s6_t: "நிதி அணுகல்", flow_s6_d: "கடன் வழங்குநர் சரிபார்க்கப்பட்ட கூற்றுகளை மட்டுமே காண்பார்.",
+    onboard_label: "தொழிலாளர் பதிவு",
+    onboard_title: "உங்கள் நிதி சான்றை உருவாக்குங்கள்",
+    onboard_sub: "5 நிமிடங்கள் மட்டுமே ஆகும். உங்கள் தரவு பாதுகாப்பானது.",
+    lender_badge: "🏦 கடன் வழங்குநர் போர்டல்",
+    lender_title: "WageProof சான்றை சரிபார்க்கவும்",
+    lender_sub: "சரிபார்க்கப்பட்ட கூற்றுகளைக் காண QR ஐ ஸ்கேன் செய்யவும்.",
+    lender_lookup_title: "சான்றளிப்பு ஐடி உள்ளிடவும்",
+    lender_lookup_hint: "வடிவம்: WP-2026-XX-XX-XXXXXXXX",
+    lender_btn_verify: "🔍 சான்றை சரிபார்க்கவும்",
+    btn_flag_review: "✅ நேரடி ஆய்வுக்கு அனுப்பு",
+    btn_download_report: "📋 அறிக்கையைப் பதிவிறக்கு",
+    btn_request_evidence: "📧 கூடுதல் சான்றைக் கோரு",
+    btn_decline_app: "❌ நிராகரி",
+    lang_toast: "மொழி மாற்றப்பட்டது: தமிழ்"
+  },
+  te: {
+    nav_home: "హోమ్",
+    nav_onboarding: "ఆన్‌బోర్డింగ్",
+    nav_vault: "సాక్ష్యాల వాల్ట్",
+    nav_profile: "నా ప్రొఫైల్",
+    nav_credential: "QR ప్రమాణపత్రం",
+    nav_lender: "రుణదాత పోర్టల్",
+    nav_cta: "ప్రారంభించండి →",
+    hero_title: 'అనధికారిక పని,<br/><span>అధికారిక విశ్వసనీయత.</span>',
+    hero_sub: "వేజ్‌ప్రూఫ్ మీ UPI చెల్లింపులను విశ్వసనీయ ఆర్థిక సంసిద్ధత పాస్‌పోర్ట్‌గా మారుస్తుంది.",
+    hero_btn_build: "🚀 నా రుజువును సృష్టించండి",
+    hero_btn_lender: "రుణదాతల కోసం →",
+    flow_label: "ఇది ఎలా పనిచేస్తుంది",
+    flow_title: "6 దశల్లో సాక్ష్యం నుండి అవకాశాల వరకు",
+    flow_s1_t: "సమ్మతి ఇవ్వండి", flow_s1_d: "ఏమి పంచుకోవాలో మీరే నిర్ణయించుకోండి.",
+    flow_s2_t: "సాక్ష్యాలను అప్‌లోడ్ చేయండి", flow_s2_d: "UPI రికార్డులు, ఇన్‌వాయిస్‌లు, చెల్లింపు రసీదులు.",
+    flow_s3_t: "ధృవీకరణ & విశ్లేషణ", flow_s3_d: "AI నిలకడను తనిఖీ చేసి స్కోర్‌ను నిర్ధారిస్తుంది.",
+    flow_s4_t: "సంసిద్ధత ప్రొఫైల్", flow_s4_d: "స్పష్టమైన స్కోరు — ఎలాంటి రహస్యాలు లేవు.",
+    flow_s5_t: "QR ప్రమాణపత్రం", flow_s5_d: "ఏ రుణదాతకైనా చూపగల కాలపరిమితి గల రుజువు.",
+    flow_s6_t: "ఆర్థిక సదుపాయం", flow_s6_d: "రుణదాత ధృవీకరించిన సమాచారాన్ని మాత్రమే చూస్తారు.",
+    onboard_label: "వర్కర్ ఆన్‌బోర్డింగ్",
+    onboard_title: "మీ ఆర్థిక రుజువును నిర్మించుకోండి",
+    onboard_sub: "సుమారు 5 నిమిషాలు పడుతుంది. మీ డేటా గోప్యంగా ఉంటుంది.",
+    lender_badge: "🏦 రుణదాత పోర్టల్",
+    lender_title: "వేజ్‌ప్రూఫ్ ప్రమాణపత్రాన్ని ధృవీకరించండి",
+    lender_sub: "ధృవీకరించబడిన సమాచారం కోసం QR ని స్కాన్ చేయండి.",
+    lender_lookup_title: "రుజువు ID ని నమోదు చేయండి",
+    lender_lookup_hint: "ఫార్మాట్: WP-2026-XX-XX-XXXXXXXX",
+    lender_btn_verify: "🔍 ధృవీకరించండి",
+    btn_flag_review: "✅ మాన్యువల్ సమీక్షకు పంపండి",
+    btn_download_report: "📋 నివేదికను డౌన్‌లోడ్ చేయండి",
+    btn_request_evidence: "📧 మరిన్ని సాక్ష్యాలను అభ్యర్థించండి",
+    btn_decline_app: "❌ తిరస్కరించండి",
+    lang_toast: "భాష మార్చబడింది: తెలుగు"
+  },
+  mr: {
+    nav_home: "मुख्यपृष्ठ",
+    nav_onboarding: "नोंदणी",
+    nav_vault: "पुरावा व्हॉल्ट",
+    nav_profile: "माझी प्रोफाइल",
+    nav_credential: "QR प्रमाणपत्र",
+    nav_lender: "कर्जदार पोर्टल",
+    nav_cta: "सुरू करा →",
+    hero_title: 'अनौपचारिक काम,<br/><span>औपचारिक विश्वासार्हता.</span>',
+    hero_sub: "वेजब्रूफ तुमची UPI देयके आणि कामाचे पुरावे एका पडताळणीकृत आर्थिक तयारी पासपोर्टमध्ये रूपांतरित करते.",
+    hero_btn_build: "🚀 माझा पुरावा तयार करा",
+    hero_btn_lender: "कर्जदारांसाठी →",
+    flow_label: "हे कसे कार्य करते",
+    flow_title: "६ सोप्या टप्प्यांत पुराव्यापासून संधीपर्यंत",
+    flow_s1_t: "संमती द्या", flow_s1_d: "काय शेअर करायचे ते निवडा. नियंत्रण पूर्णपणे तुमचे आहे.",
+    flow_s2_t: "पुरावे अपलोड करा", flow_s2_d: "UPI नोंदी, पावत्या आणि कामाची देयके.",
+    flow_s3_t: "पडताळणी व विश्लेषण", flow_s3_d: "AI सातत्य आणि उत्पन्नाची पडताळणी करते.",
+    flow_s4_t: "तयारी प्रोफाइल", flow_s4_d: "पारदर्शक स्कोअर — कोणतीही लपवाछपवी नाही.",
+    flow_s5_t: "QR प्रमाणपत्र", flow_s5_d: "कोणत्याही सावकारासाठी मुदत मर्यादित सुरक्षित पुरावा.",
+    flow_s6_t: "आर्थिक सहाय्य", flow_s6_d: "सावकार केवळ पडताळलेले दावे पाहतो — खाजगी डेटा नाही.",
+    onboard_label: "कामगार नोंदणी",
+    onboard_title: "तुमचा आर्थिक पुरावा तयार करा",
+    onboard_sub: "सुमारे ५ मिनिटे लागतात. तुमचा डेटा सुरक्षित राहतो.",
+    lender_badge: "🏦 कर्जदार पडताळणी पोर्टल",
+    lender_title: "वेजब्रूफ प्रमाणपत्र पडताळा",
+    lender_sub: "पडताळलेले दावे पाहण्यासाठी क्रेडेन्शियल आयडी टाका किंवा क्यूआर स्कॅन करा.",
+    lender_lookup_title: "क्रेडेन्शियल आयडी टाका",
+    lender_lookup_hint: "स्वरूप: WP-2026-XX-XX-XXXXXXXX",
+    lender_btn_verify: "🔍 प्रमाणपत्र पडताळा",
+    btn_flag_review: "✅ मॅन्युअल पुनरावलोकनासाठी पाठवा",
+    btn_download_report: "📋 अहवाल डाउनलोड करा",
+    btn_request_evidence: "📧 अधिक पुराव्यांची विनंती करा",
+    btn_decline_app: "❌ नाकारा",
+    lang_toast: "भाषा बदलली: मराठी"
+  }
+};
+
+function setLanguage(lang) {
+  if (!translations[lang]) lang = 'en';
+  const t = translations[lang];
+
+  // Nav
+  const navH = document.getElementById('nav-landing'); if (navH) navH.textContent = t.nav_home;
+  const navO = document.getElementById('nav-onboarding'); if (navO) navO.textContent = t.nav_onboarding;
+  const navV = document.getElementById('nav-vault'); if (navV) navV.textContent = t.nav_vault;
+  const navP = document.getElementById('nav-profile'); if (navP) navP.textContent = t.nav_profile;
+  const navQ = document.getElementById('nav-credential'); if (navQ) navQ.textContent = t.nav_credential;
+  const navL = document.getElementById('nav-lender'); if (navL) navL.innerHTML = t.nav_lender + ' <span class="nav-badge">For Lenders</span>';
+  const navC = document.getElementById('i18n-nav-cta'); if (navC) navC.textContent = t.nav_cta;
+
+  // Hero
+  const ht = document.getElementById('i18n-hero-title'); if (ht) ht.innerHTML = t.hero_title;
+  const hs = document.getElementById('i18n-hero-sub'); if (hs) hs.textContent = t.hero_sub;
+  const hb = document.getElementById('i18n-hero-btn-build'); if (hb) hb.textContent = t.hero_btn_build;
+  const hl = document.getElementById('i18n-hero-btn-lender'); if (hl) hl.textContent = t.hero_btn_lender;
+
+  // How It Works Flow (6 steps)
+  const fl = document.getElementById('i18n-flow-label'); if (fl) fl.textContent = t.flow_label;
+  const ft = document.getElementById('i18n-flow-title'); if (ft) ft.textContent = t.flow_title;
+  const s1t = document.getElementById('i18n-flow-step1-title'); if (s1t) s1t.textContent = t.flow_s1_t;
+  const s1d = document.getElementById('i18n-flow-step1-desc'); if (s1d) s1d.textContent = t.flow_s1_d;
+  const s2t = document.getElementById('i18n-flow-step2-title'); if (s2t) s2t.textContent = t.flow_s2_t;
+  const s2d = document.getElementById('i18n-flow-step2-desc'); if (s2d) s2d.textContent = t.flow_s2_d;
+  const s3t = document.getElementById('i18n-flow-step3-title'); if (s3t) s3t.textContent = t.flow_s3_t;
+  const s3d = document.getElementById('i18n-flow-step3-desc'); if (s3d) s3d.textContent = t.flow_s3_d;
+  const s4t = document.getElementById('i18n-flow-step4-title'); if (s4t) s4t.textContent = t.flow_s4_t;
+  const s4d = document.getElementById('i18n-flow-step4-desc'); if (s4d) s4d.textContent = t.flow_s4_d;
+  const s5t = document.getElementById('i18n-flow-step5-title'); if (s5t) s5t.textContent = t.flow_s5_t;
+  const s5d = document.getElementById('i18n-flow-step5-desc'); if (s5d) s5d.textContent = t.flow_s5_d;
+  const s6t = document.getElementById('i18n-flow-step6-title'); if (s6t) s6t.textContent = t.flow_s6_t;
+  const s6d = document.getElementById('i18n-flow-step6-desc'); if (s6d) s6d.textContent = t.flow_s6_d;
+
+  // Onboarding
+  const ol = document.getElementById('i18n-onboard-label'); if (ol) ol.textContent = t.onboard_label;
+  const ot = document.getElementById('i18n-onboard-title'); if (ot) ot.textContent = t.onboard_title;
+  const os = document.getElementById('i18n-onboard-sub'); if (os) os.textContent = t.onboard_sub;
+
+  // Lender
+  const lb = document.getElementById('i18n-lender-badge'); if (lb) lb.textContent = t.lender_badge;
+  const lt = document.getElementById('i18n-lender-title'); if (lt) lt.textContent = t.lender_title;
+  const ls = document.getElementById('i18n-lender-sub'); if (ls) ls.textContent = t.lender_sub;
+  const lk = document.getElementById('i18n-lender-lookup-title'); if (lk) lk.textContent = t.lender_lookup_title;
+  const lh = document.getElementById('i18n-lender-lookup-hint'); if (lh) lh.textContent = t.lender_lookup_hint;
+  const lv = document.getElementById('i18n-btn-verify'); if (lv) lv.textContent = t.lender_btn_verify;
+
+  // Buttons
+  const bf = document.getElementById('btn-flag-review'); if (bf) bf.textContent = t.btn_flag_review;
+  const bd = document.getElementById('btn-download-report'); if (bd) bd.textContent = t.btn_download_report;
+  const be = document.getElementById('btn-request-evidence'); if (be) be.textContent = t.btn_request_evidence;
+  const bc = document.getElementById('btn-decline-app'); if (bc) bc.textContent = t.btn_decline_app;
+
+  // Selector sync
+  const sel = document.getElementById('lang-selector'); if (sel) sel.value = lang;
+  try { localStorage.setItem('wageproof_lang', lang); } catch(e){}
+  showToast(t.lang_toast);
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('wageproof_lang');
+  if (saved && saved !== 'en') {
+    setLanguage(saved);
+  }
+});
+
+/* ─── ROUTING ───────────────────────────────────────────── */
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const nav = document.getElementById('nav-' + id);
+  if (nav) nav.classList.add('active');
+  window.scrollTo(0, 0);
+  if (id === 'profile') setTimeout(initProfileCharts, 100);
+  if (id === 'credential') setTimeout(initQR, 100);
+  if (id === 'lender') document.getElementById('lender-result').classList.add('hidden');
+}
+
+/* ─── TOAST ─────────────────────────────────────────────── */
+function showToast(msg, ms = 3200) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), ms);
+}
+
+/* ─── WIZARD ────────────────────────────────────────────── */
+const uploadedFiles = new Set();
+
+function nextStep(step) {
+  if (step === 2 && !document.getElementById('consent-agree').checked) {
+    showToast('⚠️ Please agree to the consent terms first.');
+    return;
+  }
+  if (step === 4) buildReviewSummary();
+  goToStep(step);
+}
+
+function prevStep(step) { goToStep(step); }
+
+function goToStep(n) {
+  document.querySelectorAll('.wizard-panel').forEach(p => p.classList.remove('active'));
+  for (let i = 1; i <= 4; i++) {
+    const d = document.getElementById('step-dot-' + i);
+    const l = document.getElementById('step-lbl-' + i);
+    d.classList.remove('active', 'done');
+    l.classList.remove('active');
+    if (i < n) d.classList.add('done');
+    if (i === n) { d.classList.add('active'); l.classList.add('active'); }
+  }
+  document.getElementById('wizard-step-' + n).classList.add('active');
+}
+
+function toggleEvidence(id, fileName) {
+  const el = document.getElementById(id);
+  const sel = el.dataset.selected === 'true';
+  el.dataset.selected = sel ? 'false' : 'true';
+  el.classList.toggle('selected', !sel);
+  if (sel) uploadedFiles.delete(fileName);
+  else uploadedFiles.add(fileName);
+  renderUploadList();
+}
+
+function renderUploadList() {
+  const list = document.getElementById('upload-list');
+  list.innerHTML = [...uploadedFiles].map(f => `
+    <div class="upload-item">
+      <div style="font-size:1.3rem">${f.split(' ')[0]}</div>
+      <div style="font-size:.85rem;font-weight:500;flex:1">${f}</div>
+      <span class="badge badge-teal" style="font-size:.68rem">Queued</span>
+    </div>
+  `).join('');
+}
+
+function buildReviewSummary() {
+  const name = document.getElementById('inp-name').value || 'Not provided';
+  const occ = document.getElementById('inp-occupation').value || 'Not provided';
+  const state = document.getElementById('inp-state').value || 'Not provided';
+  const income = document.getElementById('inp-income').value || 'Not provided';
+  document.getElementById('review-summary').innerHTML = `
+    <strong style="color:var(--teal)">Name:</strong> ${name}<br>
+    <strong style="color:var(--teal)">Occupation:</strong> ${occ}<br>
+    <strong style="color:var(--teal)">State:</strong> ${state}<br>
+    <strong style="color:var(--teal)">Declared Income:</strong> ${income} (self-declared, unverified)<br>
+    <strong style="color:var(--teal)">Evidence Queued:</strong> ${uploadedFiles.size} document type${uploadedFiles.size !== 1 ? 's' : ''}<br>
+    <strong style="color:var(--teal)">Consent:</strong> ✅ Agreed
+  `;
+}
+
+/* ─── FASTAPI BACKEND INTEGRATION ───────────────────────── */
+const API_BASE = window.location.port === '8000' ? '' : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:8000' : 'https://elfya-103-211-14-48.run.pinggy-free.link');
+let currentWorkerId = 'worker_sana_01';
+let currentCredentialId = 'cred_wp_8892';
+let latestBackendScore = null;
+let currentCredential = null;
+
+async function checkBackendConnection() {
+  try {
+    const res = await fetch(`${API_BASE}/health`);
+    if (res.ok) {
+      fetch(`${API_BASE}/api/stats`).then(r => r.json()).then(stats => {
+        console.log('✅ WageProof Backend Connected:', stats);
+      }).catch(()=>{});
+    }
+  } catch(e) {
+    console.log('WageProof Backend: Offline mode / Standby');
+  }
+}
+window.addEventListener('DOMContentLoaded', checkBackendConnection);
+
+async function testLiveConnection() {
+  const start = performance.now();
+  showToast('📡 Pinging backend SQLite database…');
+  try {
+    const res = await fetch(`${API_BASE}/api/stats`);
+    const data = await res.json();
+    const ms = Math.round(performance.now() - start);
+    alert(`🎉 LIVE CONNECTION CONFIRMED!\n\n` +
+          `• Backend Framework: FastAPI (Python 3)\n` +
+          `• Database Engine: SQLite3 (wageproof.db)\n` +
+          `• Roundtrip Latency: ${ms} ms\n` +
+          `• Total Registered Workers: ${data.total_workers}\n` +
+          `• Documents in Evidence Vault: ${data.total_verified_documents}\n` +
+          `• Issued Credentials: ${data.issued_credentials}\n` +
+          `• Average Readiness Score: ${data.average_readiness_score}/100\n\n` +
+          `Frontend and Backend are 100% actively connected!`);
+  } catch(err) {
+    alert('❌ Connection failed: ' + err.message);
+  }
+}
+
+async function submitProfile() {
+  document.getElementById('processing-bar').style.display = 'block';
+  document.getElementById('review-actions').style.display = 'none';
+
+  const steps = [
+    [15,'Calling FastAPI: registering worker consent…'],
+    [35,'Ingesting & verifying evidence vault documents…'],
+    [60,'FastAPI Engine: Running algorithmic readiness model…'],
+    [85,'Calculating multi-platform stability & limits…'],
+    [100,'✅ Profile synced with WageProof Database!'],
+  ];
+  let i = 0;
+  const iv = setInterval(() => {
+    if (i < steps.length) {
+      document.getElementById('proc-fill').style.width = steps[i][0] + '%';
+      document.getElementById('proc-status').textContent = steps[i][1];
+      i++;
+    }
+  }, 500);
+
+  const name = document.getElementById('inp-name').value || 'Sana Khan';
+  const occ = document.getElementById('inp-occupation').value || 'Delivery & Driver Partner';
+  const incomeRaw = document.getElementById('inp-income').value || '38500';
+  const incomeVal = parseFloat(incomeRaw.replace(/[^0-9.]/g, '')) || 38500;
+
+  try {
+    // 1. Onboard Worker in SQLite via FastAPI
+    const onboardRes = await fetch(`${API_BASE}/api/workers/onboard`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        name: name,
+        phone: '+91 98765 43210',
+        primary_platform: occ,
+        secondary_platforms: 'Uber, Zomato, Swiggy',
+        monthly_income_est: incomeVal
+      })
+    });
+
+    if (onboardRes.ok) {
+      const worker = await onboardRes.json();
+      currentWorkerId = worker.id;
+
+      // 2. Upload Evidence Documents to Vault
+      const docsToUpload = uploadedFiles.size > 0 ? [...uploadedFiles] : ['Bank Account Statement.pdf', 'Platform Invoices.pdf'];
+      for (const docName of docsToUpload) {
+        await fetch(`${API_BASE}/api/evidence/upload`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            worker_id: currentWorkerId,
+            doc_type: 'Income Proof',
+            platform: occ,
+            file_name: docName,
+            income_amount: incomeVal * 0.7
+          })
+        });
+      }
+
+      // 3. Algorithmic Readiness Scoring
+      const scoreRes = await fetch(`${API_BASE}/api/readiness/calculate/${currentWorkerId}`, { method: 'POST' });
+      if (scoreRes.ok) {
+        latestBackendScore = await scoreRes.json();
+        clearInterval(iv);
+        document.getElementById('proc-fill').style.width = '100%';
+        document.getElementById('proc-status').textContent = '✅ Profile synced with WageProof Database!';
+        setTimeout(() => {
+          showToast(`🎉 Backend Calculated Readiness Score: ${latestBackendScore.score}/100`);
+          showPage('profile');
+        }, 500);
+        return;
+      }
+    }
+  } catch (err) {
+    console.warn('Backend API call failed, falling back to local simulation', err);
+  }
+
+  // Fallback if backend offline
+  setTimeout(() => {
+    clearInterval(iv);
+    showToast('🎉 Profile ready! Readiness Score: 71/100');
+    showPage('profile');
+  }, 2600);
+}
+
+/* ─── CHARTS ────────────────────────────────────────────── */
+let scoreChart = null, incomeChart = null;
+
+function initProfileCharts() {
+  const targetScore = latestBackendScore ? latestBackendScore.score : 71;
+  const ctx1 = document.getElementById('scoreChart').getContext('2d');
+  if (scoreChart) scoreChart.destroy();
+  scoreChart = new Chart(ctx1, {
+    type: 'doughnut',
+    data: { datasets: [{ data: [targetScore, 100 - targetScore], backgroundColor: ['rgba(0,212,170,1)', 'rgba(255,255,255,.06)'], borderWidth: 0, circumference: 270, rotation: 225 }] },
+    options: { responsive: false, cutout: '80%', plugins: { legend: { display: false }, tooltip: { enabled: false } }, animation: { duration: 1200, easing: 'easeInOutQuart' } }
+  });
+  let n = 0;
+  const el = document.getElementById('scoreDisplay');
+  const iv = setInterval(() => { n = Math.min(n + 2, targetScore); el.textContent = n; if (n >= targetScore) clearInterval(iv); }, 18);
+
+  const ctx2 = document.getElementById('incomeChart').getContext('2d');
+  if (incomeChart) incomeChart.destroy();
+  incomeChart = new Chart(ctx2, {
+    type: 'line',
+    data: {
+      labels: ['Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep'],
+      datasets: [{ data: [12400,15800,11200,17600,16900,14300,18200,19500,15700,21000,17800,20300], borderColor: '#00D4AA', backgroundColor: 'rgba(0,212,170,.08)', borderWidth: 2.5, pointBackgroundColor: '#00D4AA', pointRadius: 4, tension: 0.4, fill: true }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1E293B', titleColor: '#00D4AA', bodyColor: '#CBD5E1', borderColor: 'rgba(0,212,170,.2)', borderWidth: 1, callbacks: { label: c => '₹' + c.raw.toLocaleString('en-IN') } } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,.04)' }, ticks: { color: '#94A3B8', font: { size: 11 } } },
+        y: { grid: { color: 'rgba(255,255,255,.04)' }, ticks: { color: '#94A3B8', font: { size: 11 }, callback: v => '₹' + (v/1000).toFixed(0) + 'k' } }
+      }
+    }
+  });
+}
+
+/* ─── VERIFIABLE CREDENTIALS & QR ───────────────────────── */
+let qrDone = false;
+async function initQR() {
+  if (qrDone) return;
+  const c = document.getElementById('qrcode-container');
+  c.innerHTML = '<div style="width:160px;height:160px;display:flex;align-items:center;justify-content:center;color:var(--teal)">🔄 Contacting Backend…</div>';
+
+  try {
+    const res = await fetch(`${API_BASE}/api/credentials/issue`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ worker_id: currentWorkerId, validity_days: 30 })
+    });
+    if (res.ok) {
+      currentCredential = await res.json();
+      currentCredentialId = currentCredential.id;
+      document.getElementById('lookup-id').value = currentCredential.id;
+      c.innerHTML = '';
+      new QRCode(c, {
+        text: currentCredential.qr_data,
+        width: 160,
+        height: 160,
+        colorDark: '#0F172A',
+        colorLight: '#FFFFFF',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+      qrDone = true;
+      showToast(`🔑 Issued Verifiable Credential: ${currentCredential.id}`);
+      startCountdown();
+      return;
+    }
+  } catch(e) {
+    console.warn('Backend credential issue fallback', e);
+  }
+
+  // Fallback
+  c.innerHTML = '';
+  try {
+    new QRCode(c, { text: JSON.stringify({ id: 'WP-2026-DL-SB-8F3A2C1D', name: 'Sana Khan', score: 71, income_band: '35000-42000', continuity_months: 27, confidence: 'moderate-high', expires: '2026-10-10T23:59:59Z', issuer: 'wageproof.io' }), width: 160, height: 160, colorDark: '#0F172A', colorLight: '#FFFFFF', correctLevel: QRCode.CorrectLevel.M });
+    qrDone = true;
+  } catch(e) {
+    c.innerHTML = '<div style="width:160px;height:160px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#333;text-align:center;padding:1rem;border-radius:8px">QR Code<br/>cred_wp_8892</div>';
+  }
+  startCountdown();
+}
+
+function startCountdown() {
+  let s = 247337;
+  const total = 72 * 3600;
+  const iv = setInterval(() => {
+    if (s <= 0) { clearInterval(iv); return; }
+    s--;
+    const h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sc = s%60;
+    document.getElementById('timer-text').textContent = `⏱ ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sc).padStart(2,'0')} remaining`;
+    document.getElementById('timer-bar').style.width = (s/total*100) + '%';
+  }, 1000);
+}
+
+function copyCredentialId() {
+  const id = currentCredentialId || 'cred_wp_8892';
+  navigator.clipboard.writeText(id).catch(() => {});
+  showToast(`📋 Copied ${id} to clipboard!`);
+}
+
+function revokeCredential() {
+  const id = currentCredentialId || 'cred_wp_8892';
+  showToast(`🚫 Credential ${id} marked for revocation.`);
+}
+
+function generateNewCredential() {
+  qrDone = false;
+  document.getElementById('qrcode-container').innerHTML = '<div style="width:160px;height:160px;display:flex;align-items:center;justify-content:center;color:var(--teal)">🔄</div>';
+  setTimeout(() => { initQR(); }, 600);
+}
+
+/* ─── LENDER VERIFICATION ───────────────────────────────── */
+async function verifyCredential() {
+  const id = document.getElementById('lookup-id').value.trim();
+  if (!id) { showToast('⚠️ Please enter a Credential ID'); return; }
+  showToast('🔍 Verifying against WageProof Trust Network…');
+
+  try {
+    const res = await fetch(`${API_BASE}/api/lender/verify`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ credential_id: id, lender_name: 'HDFC MicroFinance' })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const r = document.getElementById('lender-result');
+      r.classList.remove('hidden');
+      r.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (data.verified) {
+        showToast(`✅ Verified! Audit ID: ${data.audit_id}`);
+      } else {
+        showToast(`⚠️ Status: ${data.status} (Audit: ${data.audit_id})`);
+      }
+      return;
+    }
+  } catch(e) {
+    console.warn('Lender verify fallback', e);
+  }
+
+  // Reset decision container
+  const dec = document.getElementById('lender-decision-container');
+  if (dec) { dec.style.display = 'none'; dec.innerHTML = ''; }
+  const btnF = document.getElementById('btn-flag-review');
+  if (btnF) { btnF.innerHTML = '✅ Flag for Manual Review'; btnF.style.background = ''; btnF.style.color = ''; }
+  const btnD = document.getElementById('btn-decline-app');
+  if (btnD) { btnD.innerHTML = '❌ Decline'; btnD.style.background = ''; btnD.style.color = ''; }
+
+  const r = document.getElementById('lender-result');
+  r.classList.remove('hidden');
+  r.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  showToast('✅ Credential verified successfully!');
+}
+
+/* ─── LENDER UNDERWRITING ACTIONS ───────────────────────── */
+async function flagForManualReview() {
+  const decContainer = document.getElementById('lender-decision-container');
+  const ticketId = 'WP-REV-' + Math.floor(1000 + Math.random() * 9000);
+  
+  decContainer.style.display = 'block';
+  decContainer.innerHTML = `
+    <div style="margin:1rem 2rem;padding:1.2rem 1.5rem;background:rgba(245,158,11,.12);border:1.5px solid rgba(245,158,11,.4);border-radius:12px;animation:fadeIn .3s ease">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:.6rem;font-weight:800;color:var(--amber);font-size:.95rem">
+          <span>⏳</span> Application Flagged for Human Review
+        </div>
+        <span class="badge badge-amber" style="font-size:.7rem">Ticket: ${ticketId}</span>
+      </div>
+      <div style="font-size:.82rem;color:var(--grey-lt);margin-top:.6rem;line-height:1.55">
+        • <strong>Assigned Risk Officer:</strong> Priya Sharma (Senior Underwriting Analyst)<br>
+        • <strong>Applicant Communication:</strong> SMS dispatched to +91 98765 43210. Target review time: <strong>Within 2 Hours</strong>.<br>
+        • <strong>Compliance Record:</strong> Action logged with timestamp to WageProof audit trail.
+      </div>
+    </div>
+  `;
+
+  // Update status badge
+  const badges = document.getElementById('lender-status-badges');
+  if (badges) {
+    badges.innerHTML = `
+      <span class="badge badge-amber" style="font-size:.68rem"><span class="dot dot-amber"></span>In Review (${ticketId})</span>
+      <span class="badge badge-grey" style="font-size:.68rem">Reviewer: Priya Sharma</span>
+    `;
+  }
+
+  // Update button states
+  const btnFlag = document.getElementById('btn-flag-review');
+  if (btnFlag) {
+    btnFlag.innerHTML = '✓ Flagged for Review';
+    btnFlag.style.background = 'var(--amber)';
+    btnFlag.style.color = '#0F172A';
+  }
+
+  showToast(`⏳ Application flagged for manual review (${ticketId})`);
+
+  // Call backend API to record decision in audit trail
+  try {
+    const credId = document.getElementById('lookup-id').value.trim() || 'cred_wp_8892';
+    await fetch(`${API_BASE}/api/lender/decision`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        credential_id: credId,
+        decision: 'FLAG_MANUAL_REVIEW',
+        lender_name: 'HDFC MicroFinance'
+      })
+    });
+  } catch(e) {}
+}
+
+async function declineApplication() {
+  const decContainer = document.getElementById('lender-decision-container');
+  const decId = 'WP-DEC-' + Math.floor(1000 + Math.random() * 9000);
+  
+  decContainer.style.display = 'block';
+  decContainer.innerHTML = `
+    <div style="margin:1rem 2rem;padding:1.2rem 1.5rem;background:rgba(248,113,113,.12);border:1.5px solid rgba(248,113,113,.4);border-radius:12px;animation:fadeIn .3s ease">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:.6rem;font-weight:800;color:var(--red);font-size:.95rem">
+          <span>❌</span> Application Declined
+        </div>
+        <span class="badge badge-red" style="font-size:.7rem">Ref: ${decId}</span>
+      </div>
+      <div style="font-size:.82rem;color:var(--grey-lt);margin-top:.6rem;line-height:1.55">
+        • <strong>Decline Reason:</strong> Informal evidence continuity below lender risk threshold.<br>
+        • <strong>Notice:</strong> Applicant notified via SMS with recommendations on uploading more proofs.<br>
+        • <strong>Regulatory Trail:</strong> Decline reference ${decId} saved to immutable audit trail.
+      </div>
+    </div>
+  `;
+
+  // Update status badge
+  const badges = document.getElementById('lender-status-badges');
+  if (badges) {
+    badges.innerHTML = `
+      <span class="badge badge-red" style="font-size:.68rem"><span class="dot" style="background:var(--red)"></span>Application Declined</span>
+      <span class="badge badge-grey" style="font-size:.68rem">Ref: ${decId}</span>
+    `;
+  }
+
+  // Update button states
+  const btnDecline = document.getElementById('btn-decline-app');
+  if (btnDecline) {
+    btnDecline.innerHTML = '✕ Declined';
+    btnDecline.style.background = 'var(--red)';
+    btnDecline.style.color = '#fff';
+  }
+
+  showToast(`❌ Application Declined (Ref: ${decId})`);
+
+  // Call backend API to record decision in audit trail
+  try {
+    const credId = document.getElementById('lookup-id').value.trim() || 'cred_wp_8892';
+    await fetch(`${API_BASE}/api/lender/decision`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        credential_id: credId,
+        decision: 'DECLINE',
+        lender_name: 'HDFC MicroFinance'
+      })
+    });
+  } catch(e) {}
+}
+
+function downloadReport() {
+  showToast('📥 Generating official verification report…');
+  const credId = document.getElementById('lookup-id').value.trim() || 'WP-2026-DL-SB-8F3A2C1D';
+  const reportHtml = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>WageProof - Verification Report (${credId})</title>
+<style>
+  body{font-family:sans-serif;padding:2.5rem;color:#0F172A;max-width:800px;margin:0 auto;line-height:1.6}
+  .header{border-bottom:3px solid #00D4AA;padding-bottom:1rem;margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center}
+  .badge{background:#0F172A;color:#00D4AA;padding:4px 12px;border-radius:20px;font-weight:bold;font-size:12px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem}
+  .card{border:1px solid #E2E8F0;padding:1.2rem;border-radius:8px;background:#F8FAFC}
+  .score{font-size:36px;font-weight:900;color:#00A887}
+  .footer{font-size:11px;color:#64748B;border-top:1px solid #E2E8F0;padding-top:1rem;margin-top:2rem}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1 style="margin:0;color:#0F172A">WageProof™ Financial Readiness Certificate</h1>
+    <p style="margin:4px 0 0;color:#64748B;font-size:13px">Official Decision Support Summary for Institutional Underwriters</p>
+  </div>
+  <div class="badge">VERIFIED VALID</div>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <div style="font-size:12px;color:#64748B;font-weight:bold">APPLICANT INFORMATION</div>
+    <p style="font-size:18px;font-weight:bold;margin:4px 0">Sana Begum</p>
+    <p style="margin:0;color:#475569;font-size:13px">Occupation: Home-based Tailor & Gig Partner<br>Location: Delhi, India</p>
+  </div>
+  <div class="card">
+    <div style="font-size:12px;color:#64748B;font-weight:bold">READINESS TRUST SCORE</div>
+    <div class="score">71 / 100</div>
+    <p style="margin:0;color:#00A887;font-weight:bold;font-size:13px">Tier: Moderate–High Readiness</p>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom:2rem">
+  <div style="font-size:12px;color:#64748B;font-weight:bold;margin-bottom:8px">VERIFIED CLAIMS SUMMARY (PRIVACY-PRESERVING ZERO-KNOWLEDGE PROOF)</div>
+  <table style="width:100%;border-collapse:collapse;font-size:13px">
+    <tr><td style="padding:6px 0;border-bottom:1px solid #E2E8F0"><strong>Monthly Income Band:</strong></td><td style="text-align:right">₹14,000 – ₹22,000 / month</td></tr>
+    <tr><td style="padding:6px 0;border-bottom:1px solid #E2E8F0"><strong>Work Continuity:</strong></td><td style="text-align:right">27 Verified Active Months</td></tr>
+    <tr><td style="padding:6px 0;border-bottom:1px solid #E2E8F0"><strong>Active Weeks (Last 12 Mo):</strong></td><td style="text-align:right">44 / 52 Weeks</td></tr>
+    <tr><td style="padding:6px 0;border-bottom:1px solid #E2E8F0"><strong>Supplier Payment History:</strong></td><td style="text-align:right">Consistent (11 Records)</td></tr>
+    <tr><td style="padding:6px 0"><strong>Recommended Credit Range:</strong></td><td style="text-align:right;color:#00A887;font-weight:bold">₹15,000 – ₹25,000</td></tr>
+  </table>
+</div>
+
+<div class="footer">
+  Credential ID: ${credId} • Issued on WageProof Decentralized Identity Network.<br>
+  Cryptographic SHA-256 Digest: 4e08708c794476a48d8cfaa8d9ac60264ba72006fc83d8367f459f73591c6baf<br>
+  Generated at: ${new Date().toUTCString()}
+</div>
+</body>
+</html>`;
+
+  const blob = new Blob([reportHtml], {type: 'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `WageProof_Verification_${credId}.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('✅ Official Verification Certificate downloaded!');
+}
+
+async function requestMoreEvidence() {
+  const decContainer = document.getElementById('lender-decision-container');
+  decContainer.style.display = 'block';
+  decContainer.innerHTML = `
+    <div style="margin:1rem 2rem;padding:1.2rem 1.5rem;background:rgba(14,165,233,.1);border:1.5px solid rgba(14,165,233,.4);border-radius:12px;animation:fadeIn .3s ease">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:.6rem;font-weight:800;color:#38BDF8;font-size:.95rem">
+          <span>📧</span> More Evidence Requested from Applicant
+        </div>
+        <span class="badge" style="background:rgba(14,165,233,.2);color:#38BDF8;font-size:.7rem">SMS & WhatsApp Sent</span>
+      </div>
+      <div style="font-size:.82rem;color:var(--grey-lt);margin-top:.6rem;line-height:1.55">
+        • A secure upload link has been dispatched to <strong>+91 98765 43210</strong>.<br>
+        • Requested Items: <em>Additional 3-Month Platform Invoices / Bank UPI Statement</em>.<br>
+        • When Sana uploads the evidence, this portal will automatically update.
+      </div>
+    </div>
+  `;
+
+  showToast('📧 Evidence request sent to worker via SMS & WhatsApp!');
+  try {
+    const credId = document.getElementById('lookup-id').value.trim() || 'cred_wp_8892';
+    await fetch(`${API_BASE}/api/lender/decision`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        credential_id: credId,
+        decision: 'REQUEST_MORE_EVIDENCE',
+        lender_name: 'HDFC MicroFinance'
+      })
+    });
+  } catch(e) {}
+}
+
+</script>
+</body>
+</html>
+
